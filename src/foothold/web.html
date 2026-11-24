@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>foothold</title>
+<style nonce="__NONCE__">
+:root { --bg:#fbfbfd; --card:#fff; --ink:#16161d; --soft:#5d5d6b; --line:#e4e4ec; --accent:#6d4aff; --yes:#12805c; --no:#b3261e; --unknown:#8a6d00; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111116; --card:#1a1a22; --ink:#f1f1f6; --soft:#a2a2b3; --line:#2c2c38; --accent:#9d85ff; --yes:#4fd1a1; --no:#ff8a80; --unknown:#e5c558; }
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width:860px; margin:0 auto; padding:32px 16px 80px; }
+h1 { font-size:28px; margin:0; letter-spacing:-.02em; }
+h2 { font-size:22px; margin:0; }
+h3 { font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--soft); margin:28px 0 8px; }
+p { margin:0 0 8px; }
+.lead { color:var(--soft); margin:4px 0 24px; }
+form { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start; }
+textarea { flex:1 1 320px; min-height:76px; padding:10px 12px; font:inherit; color:inherit; background:var(--card); border:1px solid var(--line); border-radius:10px; resize:vertical; }
+button { font:inherit; font-weight:600; padding:10px 16px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+button:disabled { opacity:.5; cursor:default; }
+button:focus-visible, textarea:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+#status { min-height:24px; margin:12px 0; color:var(--soft); }
+#status.error { color:var(--no); }
+article { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:24px; margin-top:20px; }
+.head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.meta { color:var(--soft); font-size:14px; }
+.score { font-size:30px; font-weight:700; color:var(--accent); white-space:nowrap; }
+.score small { font-size:14px; color:var(--soft); font-weight:400; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+td, th { text-align:left; padding:6px 8px 6px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+th { color:var(--soft); font-weight:500; }
+.yes { color:var(--yes); font-weight:600; } .no { color:var(--no); font-weight:600; } .unknown { color:var(--unknown); font-weight:600; }
+ul { margin:0; padding-left:20px; } li { margin-bottom:8px; }
+.quote { display:block; color:var(--soft); font-size:14px; }
+.hook { border-left:3px solid var(--accent); padding:4px 0 4px 12px; margin-bottom:14px; white-space:pre-wrap; }
+.hook b { display:block; }
+.row { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; }
+.row button { font-size:14px; padding:6px 12px; }
+a { color:var(--accent); overflow-wrap:anywhere; }
+.gaps li { color:var(--soft); margin-bottom:4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>foothold</h1>
+  <p class="lead">Account research for <strong id="offer">__OFFER__</strong>. Every fact carries its source; what is missing is listed, not guessed.</p>
+  <form id="form">
+    <textarea id="companies" aria-label="Companies, one per line" placeholder="One company per line: a name or a domain&#10;datadoghq.com&#10;Shopify"></textarea>
+    <button class="primary" id="go" type="submit">Research</button>
+  </form>
+  <p id="status" role="status"></p>
+  <div id="briefs"></div>
+</main>
+<script nonce="__NONCE__">
+const TOKEN = '__TOKEN__';
+const $ = id => document.getElementById(id);
+// Everything from the web is set as text, never as HTML
+const el = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; };
+const link = (label, url) => {
+  if (!/^https?:\/\//.test(url || '')) return el('span', label);
+  const a = el('a', label); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a;
+};
+const save = (name, text, type) => {
+  const a = el('a'); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name; a.click(); URL.revokeObjectURL(a.href);
+};
+const LABELS = {summary: 'What they do', size: 'Size', markets: 'Markets', business_model: 'Business model'};
+const CHANNELS = {email: 'Email', linkedin: 'LinkedIn', call: 'Call'};
+
+function card(bundle) {
+  const b = bundle.brief, art = el('article');
+  const head = el('div', null, 'head'), left = el('div');
+  left.append(el('h2', b.account.name), el('div', `${b.account.domain} · researched ${b.researched} · ${b.model}`, 'meta'));
+  const score = el('div', b.fit.score, 'score'); score.append(el('small', '/100 fit'));
+  head.append(left, score); art.append(head);
+
+  art.append(el('h3', 'Fit'));
+  const table = el('table'), top = el('tr');
+  ['Criterion', 'Verdict', 'Why'].forEach(t => top.append(el('th', t))); table.append(top);
+  b.fit.criteria.forEach(c => {
+    const tr = el('tr'), why = el('td', c.why + ' ');
+    if (c.url) why.append(link(c.source, c.url));
+    tr.append(el('td', c.name), el('td', c.verdict, c.verdict), why); table.append(tr);
+  });
+  art.append(table);
+
+  art.append(el('h3', 'Company'));
+  const facts = el('ul');
+  Object.keys(LABELS).forEach(k => {
+    const f = b.company[k], li = el('li'); li.append(el('strong', LABELS[k] + ': '));
+    if (f) { li.append(f.text + ' '); li.append(link(f.source, f.url)); } else li.append('Not found in the public sources checked.');
+    facts.append(li);
+  });
+  art.append(facts);
+
+  art.append(el('h3', 'Buying signals'));
+  if (!b.signals.length) art.append(el('p', 'None found in the period checked.'));
+  const signals = el('ol');
+  b.signals.forEach(s => {
+    const li = el('li'); li.append(el('strong', `${s.date || 'undated, seen ' + s.collected} · ${s.type} `), s.text + ' ');
+    li.append(link(s.source_title, s.url), el('span', `"${s.quote}"`, 'quote')); signals.append(li);
+  });
+  art.append(signals);
+
+  art.append(el('h3', 'Who to contact (job titles only)'));
+  const roles = el('ul'); b.roles.forEach(r => { const li = el('li'); li.append(el('strong', r.title + ': '), r.why); roles.append(li); });
+  art.append(roles);
+
+  art.append(el('h3', 'Openers'));
+  if (!Object.keys(b.hooks).length) art.append(el('p', 'None written: no checked signal to open on.'));
+  Object.entries(b.hooks).forEach(([channel, h]) => {
+    const box = el('div', null, 'hook'); box.append(el('b', `${CHANNELS[channel]} · opens on signal ${h.signal}`));
+    const text = (h.subject ? `Subject: ${h.subject}\n\n` : '') + h.body; box.append(text);
+    const copy = el('button', 'Copy'); copy.type = 'button';
+    copy.onclick = () => navigator.clipboard.writeText(text).then(() => { copy.textContent = 'Copied'; });
+    const row = el('div', null, 'row'); row.append(copy); box.append(row); art.append(box);
+  });
+
+  art.append(el('h3', 'Likely objections'));
+  const objections = el('ul'); b.objections.forEach(o => { const li = el('li'); li.append(el('strong', `"${o.objection}" `), o.response); objections.append(li); });
+  art.append(objections);
+
+  art.append(el('h3', 'Gaps'));
+  const gaps = el('ul', null, 'gaps'); (b.gaps.length ? b.gaps : ['None.']).forEach(g => gaps.append(el('li', g))); art.append(gaps);
+
+  const row = el('div', null, 'row'), slug = b.account.domain.replace(/[^a-z0-9]+/gi, '-');
+  [['Markdown', () => save(slug + '.md', bundle.markdown, 'text/markdown')],
+   ['JSON', () => save(slug + '.json', JSON.stringify(b, null, 2), 'application/json')],
+   ['HubSpot CSV', () => save(slug + '-hubspot.csv', bundle.csv.hubspot, 'text/csv')],
+   ['Salesforce CSV', () => save(slug + '-salesforce.csv', bundle.csv.salesforce, 'text/csv')]]
+    .forEach(([label, action]) => { const btn = el('button', label); btn.type = 'button'; btn.onclick = action; row.append(btn); });
+  art.append(row);
+  return art;
+}
+
+const api = (path, body) => fetch(path, {method: body ? 'POST' : 'GET', body: body && JSON.stringify(body),
+  headers: {'X-Foothold-Token': TOKEN, 'Content-Type': 'application/json'}}).then(async r => {
+    const data = await r.json(); if (!r.ok) throw new Error(data.error || r.statusText); return data; });
+
+const status = (text, error) => { $('status').textContent = text; $('status').className = error ? 'error' : ''; };
+
+$('form').addEventListener('submit', async event => {
+  event.preventDefault();
+  const list = $('companies').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!list.length) return status('Type at least one company.', true);
+  $('go').disabled = true;
+  const failed = [];
+  for (const [i, company] of list.entries()) {
+    status(`Researching ${company} (${i + 1} of ${list.length}). A brief takes one to three minutes.`);
+    try { $('briefs').prepend(card(await api('/api/research', {company}))); }
+    catch (e) { failed.push(`${company}: ${e.message}`); }
+  }
+  status(failed.length ? 'Could not research ' + failed.join(' · ') : 'Done.', failed.length > 0);
+  $('go').disabled = false;
+});
+
+api('/api/briefs').then(d => d.briefs.forEach(b => $('briefs').append(card(b)))).catch(() => {});
+</script>
+</body>
+</html>
