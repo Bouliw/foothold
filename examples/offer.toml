@@ -1,0 +1,53 @@
+# What you sell and to whom. Everything foothold writes is judged against this file.
+# The vendor below is fictional.
+
+language = "English"        # language of the openers
+signal_window_days = 180    # how far back a buying signal still counts
+
+# The problems you solve, in your customers' words
+problems = [
+    "Nobody can say who has access to what across cloud accounts",
+    "Engineers keep standing admin rights they used once",
+    "Access reviews for audits take weeks of spreadsheets",
+    "A leaked key or over-privileged role turns a small incident into a breach",
+]
+
+# Tools the account may already use for this
+competitors = ["CyberArk", "Wiz", "SailPoint", "Okta", "Saviynt"]
+
+# Words that betray a need when they show up in a job posting
+keywords = ["IAM", "identity", "least privilege", "cloud security", "access management", "zero trust",
+            "AWS", "Azure", "GCP", "SOC 2", "PCI", "compliance", "security engineer"]
+
+# Functions that usually buy or champion the product (job titles, never people)
+personas = ["Chief Information Security Officer", "Head of Cloud Security", "Director of Platform Engineering",
+            "Identity and Access Management Lead"]
+
+# Rules that create urgency for your buyers
+regulations = ["PCI DSS", "SOC 2", "DORA", "NIS2", "SOX"]
+
+[product]
+name = "Acme Access"
+category = "Cloud identity and access management"
+pitch = "Acme Access gives security teams one place to see and right-size who can reach what across AWS, Azure and Google Cloud, with access that expires on its own."
+
+# The ideal customer, one checkable statement per criterion. Weights set what counts most in the fit score.
+[[criteria]]
+name = "Runs production workloads on at least one major public cloud"
+weight = 3
+
+[[criteria]]
+name = "Has more than 1,000 employees"
+weight = 2
+
+[[criteria]]
+name = "Is subject to security or financial regulation (PCI DSS, SOC 2, DORA, NIS2, SOX)"
+weight = 2
+
+[[criteria]]
+name = "Is hiring for cloud security, identity or platform engineering roles"
+weight = 2
+
+[[criteria]]
+name = "Sells to enterprise customers who ask for security assurances"
+weight = 1

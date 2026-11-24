@@ -1,0 +1,337 @@
+{
+  "account": {
+    "name": "Adyen",
+    "domain": "adyen.com"
+  },
+  "researched": "2026-11-24",
+  "offer": "Acme Access",
+  "model": "local/gemma-4-26b-a4b-it-qat-mlx",
+  "company": {
+    "summary": null,
+    "size": {
+      "text": "The company processes €1.4T in transaction data annually.",
+      "quote": "Processed annually €1.4T",
+      "source": "E1",
+      "url": "https://www.adyen.com/",
+      "source_title": "Adyen: Fintech platform for enterprises - Adyen",
+      "published": null,
+      "collected": "2026-11-24"
+    },
+    "markets": {
+      "text": "Adyen serves global enterprises across sectors including retail, travel, digital media, SaaS, and financial services.",
+      "quote": "Businesses across sectors trust Adyen to keep money moving.",
+      "source": "E1",
+      "url": "https://www.adyen.com/",
+      "source_title": "Adyen: Fintech platform for enterprises - Adyen",
+      "published": null,
+      "collected": "2026-11-24"
+    },
+    "business_model": {
+      "text": "The company charges a fixed processing fee plus a fee determined by the payment method per transaction.",
+      "quote": "For each transaction, we charge a fixed processing fee + a fee determined by the payment method.",
+      "source": "E2",
+      "url": "https://www.adyen.com/pricing",
+      "source_title": "Pricing for supported payment methods - Adyen",
+      "published": null,
+      "collected": "2026-11-24"
+    }
+  },
+  "fit": {
+    "score": 50,
+    "unknown": 2,
+    "criteria": [
+      {
+        "name": "Runs production workloads on at least one major public cloud",
+        "weight": 3,
+        "verdict": "unknown",
+        "why": "Not found in the public sources checked."
+      },
+      {
+        "name": "Has more than 1,000 employees",
+        "weight": 2,
+        "verdict": "unknown",
+        "why": "Not found in the public sources checked."
+      },
+      {
+        "name": "Is subject to security or financial regulation (PCI DSS, SOC 2, DORA, NIS2, SOX)",
+        "weight": 2,
+        "verdict": "yes",
+        "why": "The company is backed by banking licenses and manages compliance for card-network programs like PCI.",
+        "quote": "This role is responsible for supporting the governance, oversight, and continuous improvement of card-network programs relating to transaction-data integrity, cardholder-data security, fraud, disputes, chargebacks, and merchant financial integrity.",
+        "source": "E8",
+        "url": "https://job-boards.greenhouse.io/adyen/jobs/8055561",
+        "source_title": "Job posting: Compliance Officer - Financial & Data Integrity Programs (Singapore)"
+      },
+      {
+        "name": "Is hiring for cloud security, identity or platform engineering roles",
+        "weight": 2,
+        "verdict": "yes",
+        "why": "They are actively hiring for an Engineering Manager in Identity and Access Management.",
+        "quote": "Engineering Manager - Identity and Access Management (posted 2026-08-19)",
+        "source": "E6",
+        "url": "https://boards.greenhouse.io/adyen",
+        "source_title": "Adyen job board (Greenhouse)"
+      },
+      {
+        "name": "Sells to enterprise customers who ask for security assurances",
+        "weight": 1,
+        "verdict": "yes",
+        "why": "Adyen serves leading brands like Meta, Uber, and Microsoft through its fintech platform.",
+        "quote": "Adyen provides payments, data, and financial products in a single solution for customers like Meta, Uber, H&M, and Microsoft",
+        "source": "E7",
+        "url": "https://job-boards.greenhouse.io/adyen/jobs/8096256",
+        "source_title": "Job posting: Engineering Manager - Identity and Access Management (San Francisco)"
+      }
+    ]
+  },
+  "signals": [
+    {
+      "type": "hiring",
+      "date": "2026-11-24",
+      "text": "Adyen has 240 open roles across various departments including Development and Infrastructure.",
+      "quote": "240 open roles on the public Greenhouse job board on 2026-11-24.",
+      "source": "E6",
+      "url": "https://boards.greenhouse.io/adyen",
+      "source_title": "Adyen job board (Greenhouse)",
+      "published": null,
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "financial",
+      "date": "2026-11-06",
+      "text": "Citi Research has lowered the target price for Adyen.",
+      "quote": "Citi Research verlaagt koersdoel Adyen",
+      "source": "E12",
+      "url": "https://www.beursduivel.be/Nieuws/884207/Citi-Research-verlaagt-koersdoel-Adyen.aspx",
+      "source_title": "Citi Research verlaagt koersdoel Adyen",
+      "published": "2026-11-06",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "hiring",
+      "date": "2026-10-22",
+      "text": "The company is hiring for an Engineering Manager in Identity & Verification Services.",
+      "quote": "Engineering Manager – Identity & Verification Services (Amsterdam)",
+      "source": "E9",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8229821",
+      "source_title": "Job posting: Engineering Manager – Identity & Verification Services (Amsterdam)",
+      "published": "2026-10-22",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "hiring",
+      "date": "2026-08-19",
+      "text": "Adyen is hiring for an Engineering Manager in Identity and Access Management to handle authentication and authorization.",
+      "quote": "Engineering Manager, Identity and Access Management",
+      "source": "E7",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8096256",
+      "source_title": "Job posting: Engineering Manager - Identity and Access Management (San Francisco)",
+      "published": "2026-08-19",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "hiring",
+      "date": "2026-07-30",
+      "text": "There is active hiring for compliance roles related to financial and data integrity programs.",
+      "quote": "Compliance Officer - Financial & Data Integrity Programs (Singapore)",
+      "source": "E8",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8055561",
+      "source_title": "Job posting: Compliance Officer - Financial & Data Integrity Programs (Singapore)",
+      "published": "2026-07-30",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "stack",
+      "date": null,
+      "text": "Adyen uses Nuxt and OneTrust on their public website.",
+      "quote": "Nuxt, OneTrust.",
+      "source": "E5",
+      "url": "https://www.adyen.com/",
+      "source_title": "Technologies visible on adyen.com",
+      "published": null,
+      "collected": "2026-11-24"
+    }
+  ],
+  "roles": [
+    {
+      "title": "Chief Information Security Officer",
+      "why": "Responsible for overall security strategy and managing risks across the platform."
+    },
+    {
+      "title": "Engineering Manager - Identity and Access Management",
+      "why": "Directly manages the team responsible for authentication and authorization."
+    },
+    {
+      "title": "Head of Cloud Security",
+      "why": "Oversees the security of cloud-based infrastructure and workloads."
+    },
+    {
+      "title": "Director of Platform Engineering",
+      "why": "Manages the engineering teams that build and maintain core platform services."
+    }
+  ],
+  "hooks": {
+    "email": {
+      "body": "I noticed you are hiring an Engineering Manager for Identity and Access Management. As your team scales authentication and authorization, ensuring you have visibility into who can reach what across cloud environments is critical. Acme Access provides automated, right-sized access that expires on its own, preventing over-privileged roles from becoming security risks.",
+      "signal": 4,
+      "subject": "Securing Adyen's IAM authentication flows"
+    },
+    "linkedin": {
+      "body": "I saw Adyen is hiring for an IAM Engineering Manager. As you scale authentication and authorization, Acme Access can help your team automate access reviews and prevent standing admin rights.",
+      "signal": 4
+    },
+    "call": {
+      "body": "I saw you're hiring for an IAM Engineering Manager. As your team scales authentication and authorization, Acme Access helps prevent over-privileged roles by providing automated, expiring access across cloud environments.",
+      "signal": 4
+    }
+  },
+  "objections": [
+    {
+      "objection": "We already have robust identity and access management processes in place.",
+      "response": "Acme Access complements existing tools by providing unified visibility and automated expiration across multiple cloud providers to prevent standing privileges."
+    },
+    {
+      "objection": "Our current compliance and security frameworks are sufficient.",
+      "response": "We help automate the evidence collection for audits, turning weeks of manual spreadsheet reviews into real-time visibility."
+    },
+    {
+      "objection": "We prefer to build our own internal identity and access tools.",
+      "response": "Building custom solutions for multi-cloud visibility is resource-intensive; we provide a specialized platform to let your engineers focus on core fintech innovation."
+    }
+  ],
+  "gaps": [
+    "SEC EDGAR: skipped, set FOOTHOLD_CONTACT (the SEC asks for a contact address)",
+    "2 statements from the model left out: the quoted passage was not in the cited source",
+    "Not found in the public sources checked: what the company does"
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "kind": "site",
+      "title": "Adyen: Fintech platform for enterprises - Adyen",
+      "url": "https://www.adyen.com/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E2",
+      "kind": "site",
+      "title": "Pricing for supported payment methods - Adyen",
+      "url": "https://www.adyen.com/pricing",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E3",
+      "kind": "site",
+      "title": "Careers - Adyen",
+      "url": "https://careers.adyen.com",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E4",
+      "kind": "registry",
+      "title": "Wikidata: Adyen",
+      "url": "https://www.wikidata.org/wiki/Q4686934",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E5",
+      "kind": "stack",
+      "title": "Technologies visible on adyen.com",
+      "url": "https://www.adyen.com/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E6",
+      "kind": "jobs",
+      "title": "Adyen job board (Greenhouse)",
+      "url": "https://boards.greenhouse.io/adyen",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E7",
+      "kind": "job",
+      "title": "Job posting: Engineering Manager - Identity and Access Management (San Francisco)",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8096256",
+      "published": "2026-08-19",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E8",
+      "kind": "job",
+      "title": "Job posting: Compliance Officer - Financial & Data Integrity Programs (Singapore)",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8055561",
+      "published": "2026-07-30",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E9",
+      "kind": "job",
+      "title": "Job posting: Engineering Manager – Identity & Verification Services (Amsterdam)",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8229821",
+      "published": "2026-10-22",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E10",
+      "kind": "job",
+      "title": "Job posting: Product Compliance Manager, Scheme Compliance (New York; San Francisco)",
+      "url": "https://job-boards.greenhouse.io/adyen/jobs/8114423",
+      "published": "2026-08-20",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E11",
+      "kind": "news",
+      "title": "Beursblik : vertrek CEO Adyen zorgt niet voor onmiddellijke veranderingen",
+      "url": "https://drimble.nl/economie/analyse/108694484/beursblik-vertrek-ceo-adyen-zorgt-niet-voor-onmiddellijke-veranderingen.html",
+      "published": "2026-11-24",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E12",
+      "kind": "news",
+      "title": "Citi Research verlaagt koersdoel Adyen",
+      "url": "https://www.beursduivel.be/Nieuws/884207/Citi-Research-verlaagt-koersdoel-Adyen.aspx",
+      "published": "2026-11-06",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E13",
+      "kind": "news",
+      "title": "Beursblik : Adyen opnieuw favoriet maar wegblijven bij Shell",
+      "url": "https://www.beursduivel.be/Nieuws/879934/Beursblik-Adyen-opnieuw-favoriet-maar-wegblijven-bij-Shell.aspx",
+      "published": "2026-10-02",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E14",
+      "kind": "news",
+      "title": "Forum : » Beursblik : Adyen opnieuw favoriet",
+      "url": "https://www.beursduivel.be/Forum/Topic/1408749/Koffiekamer_Beursblik-Adyen-opnieuw-favoriet.aspx",
+      "published": "2026-10-02",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E15",
+      "kind": "news",
+      "title": "BofAm : AI houdt Adyen niet tegen",
+      "url": "https://www.beurs.nl/Nieuws/879796/BofAm-AI-houdt-Adyen-niet-tegen.aspx",
+      "published": "2026-10-01",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E16",
+      "kind": "news",
+      "title": "Beursblik : AI houdt Adyen niet tegen",
+      "url": "https://www.beurs.nl/Nieuws/879796/Beursblik-AI-houdt-Adyen-niet-tegen.aspx",
+      "published": "2026-10-01",
+      "fetched": "2026-11-24"
+    }
+  ]
+}

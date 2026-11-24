@@ -1,0 +1,395 @@
+{
+  "account": {
+    "name": "Datadog",
+    "domain": "datadoghq.com"
+  },
+  "researched": "2026-11-24",
+  "offer": "Acme Access",
+  "model": "local/gemma-4-26b-a4b-it-qat-mlx",
+  "company": {
+    "summary": {
+      "text": "Datadog provides an integrated platform for monitoring and security, offering observability across infrastructure, applications, and data.",
+      "quote": "The integrated platform for monitoring & security",
+      "source": "E1",
+      "url": "https://www.datadoghq.com/",
+      "source_title": "Cloud Monitoring as a Service | Datadog",
+      "published": null,
+      "collected": "2026-11-24"
+    },
+    "size": {
+      "text": "8,100+ employees as of 2026-11-24.",
+      "quote": "Our 8,100+ employees help organizations across the globe enable digital transformation",
+      "source": "E4",
+      "url": "https://careers.datadoghq.com/",
+      "source_title": "Join Our Pack | Datadog Careers",
+      "published": null,
+      "collected": "2026-11-24"
+    },
+    "markets": {
+      "text": "Global organizations across various industries, including federal and enterprise sectors.",
+      "quote": "help agencies connect mission priorities, modernization programs, and operational risks to technical solutions.",
+      "source": "E13",
+      "url": "https://careers.datadoghq.com/detail/8144628/?gh_jid=8144628",
+      "source_title": "Job posting: Senior Sales Engineer - FED (District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote)",
+      "published": "2026-08-21",
+      "collected": "2026-11-24"
+    },
+    "business_model": null
+  },
+  "fit": {
+    "score": 100,
+    "unknown": 0,
+    "criteria": [
+      {
+        "name": "Runs production workloads on at least one major public cloud",
+        "weight": 3,
+        "verdict": "yes",
+        "why": "Datadog's own platform utilizes cloud-native infrastructure and integrates with major public clouds.",
+        "quote": "View pricing\nObservability\nEnd-to-end, simplified visibility into your stack’s health & performance",
+        "source": "E1",
+        "url": "https://www.datadoghq.com/",
+        "source_title": "Cloud Monitoring as a Service | Datadog"
+      },
+      {
+        "name": "Has more than 1,000 employees",
+        "weight": 2,
+        "verdict": "yes",
+        "why": "The company reports having over 8,100 employees.",
+        "quote": "Our 8,100+ employees help organizations across the globe enable digital transformation",
+        "source": "E4",
+        "url": "https://careers.datadoghq.com/",
+        "source_title": "Join Our Pack | Datadog Careers"
+      },
+      {
+        "name": "Is subject to security or financial regulation (PCI DSS, SOC 2, DORA, NIS2, SOX)",
+        "weight": 2,
+        "verdict": "yes",
+        "why": "The company manages compliance and audits for standards like SOC2 and PCI.",
+        "quote": "maintaining our compliance programs and related audits (e.g., SOC2, PCI, HIPAA, ISO)",
+        "source": "E12",
+        "url": "https://careers.datadoghq.com/detail/8098939/?gh_jid=8098939",
+        "source_title": "Job posting: Engineering Manager I, Commercial Audit (New York, New York, USA)"
+      },
+      {
+        "name": "Is hiring for cloud security, identity or platform engineering roles",
+        "weight": 2,
+        "verdict": "yes",
+        "why": "They have open roles for Cloud Security and Zero Trust Networking engineering.",
+        "quote": "Group Product Management, Cloud Security and Shared Capabilities (posted 2026-11-23)",
+        "source": "E9",
+        "url": "https://boards.greenhouse.io/datadog",
+        "source_title": "Datadog job board (Greenhouse)"
+      },
+      {
+        "name": "Sells to enterprise customers who ask for security assurances",
+        "weight": 1,
+        "verdict": "yes",
+        "why": "They provide specialized security and compliance solutions for enterprise and federal customers.",
+        "quote": "help customers and account teams address security, compliance, acquisition, and deployment requirements",
+        "source": "E13",
+        "url": "https://careers.datadoghq.com/detail/8144628/?gh_jid=8144628",
+        "source_title": "Job posting: Senior Sales Engineer - FED (District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote)"
+      }
+    ]
+  },
+  "signals": [
+    {
+      "type": "news",
+      "date": "2026-11-11",
+      "text": "Datadog reported a fourfold rise in serious vulnerabilities found in cloud workloads.",
+      "quote": "Datadog finds serious vulnerabilities in cloud workloads increase 4x in just nine months",
+      "source": "E16",
+      "url": "https://itwire.com/guest-articles/company-news/datadog-finds-serious-vulnerabilities-in-cloud-workloads-increase-4x-in-just-nine-months",
+      "source_title": "Datadog finds serious vulnerabilities in cloud workloads increase 4x in just nine months",
+      "published": "2026-11-11",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "financial",
+      "date": "2026-11-05",
+      "text": "Citigroup analysts cut the price target for Datadog stock to $290.00.",
+      "quote": "Datadog ( NASDAQ : DDOG ) Price Target Cut to $290 . 00 by Analysts at Citigroup",
+      "source": "E18",
+      "url": "https://www.dailypolitical.com/2026/11/05/datadog-nasdaqddog-price-target-cut-to-290-00-by-analysts-at-citigroup.html",
+      "source_title": "Datadog ( NASDAQ : DDOG ) Price Target Cut to $290 . 00 by Analysts at Citigroup",
+      "published": "2026-11-05",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "hiring",
+      "date": "2026-11-03",
+      "text": "The company is hiring for Zero Trust Networking roles, which focuses on workload-identity and authorization.",
+      "quote": "Manager I, Engineering - Zero Trust Networking (New York, New York, USA)",
+      "source": "E11",
+      "url": "https://careers.datadoghq.com/detail/8350419/?gh_jid=8350419",
+      "source_title": "Job posting: Manager I, Engineering - Zero Trust Networking (New York, New York, USA)",
+      "published": "2026-11-03",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "news",
+      "date": "2026-10-23",
+      "text": "Datadog is reportedly eyeing a $4B acquisition of cloud defense firm Upwind.",
+      "quote": "Why Datadog Is Eyeing a $4B Buy of Cloud Defense Firm Upwind",
+      "source": "E19",
+      "url": "https://www.bankinfosecurity.com/blogs/datadog-eyeing-4b-buy-cloud-defense-firm-upwind-p-4225",
+      "source_title": "Why Datadog Is Eyeing a $4B Buy of Cloud Defense Firm Upwind",
+      "published": "2026-10-23",
+      "collected": "2026-11-24"
+    },
+    {
+      "type": "hiring",
+      "date": "2026-07-31",
+      "text": "They are hiring for Commercial Audit roles to scale security and compliance posture through automation.",
+      "quote": "Engineering Manager I, Commercial Audit (New York, New York, USA)",
+      "source": "E12",
+      "url": "https://careers.datadoghq.com/detail/8098939/?gh_jid=8098939",
+      "source_title": "Job posting: Engineering Manager I, Commercial Audit (New York, New York, USA)",
+      "published": "2026-07-31",
+      "collected": "2026-11-24"
+    }
+  ],
+  "roles": [
+    {
+      "title": "Chief Information Security Officer",
+      "why": "Responsible for overall security posture and managing organizational risk."
+    },
+    {
+      "title": "Head of Cloud Security",
+      "why": "Oversees the security of cloud workloads and infrastructure."
+    },
+    {
+      "title": "Director of Platform Engineering",
+      "why": "Manages the infrastructure and platforms that support services."
+    },
+    {
+      "title": "Identity and Access Management Lead",
+      "why": "Focuses on managing user access and identity-based authorization."
+    }
+  ],
+  "hooks": {},
+  "objections": [
+    {
+      "objection": "We already have observability and security tools integrated.",
+      "response": "Acme Access specifically addresses the identity gap by right-sizing access across multi-cloud environments."
+    },
+    {
+      "objection": "We manage access through our existing cloud provider's IAM.",
+      "response": "Acme Access provides a unified view across AWS, Azure, and Google Cloud to prevent fragmented visibility."
+    },
+    {
+      "objection": "We have automated our compliance and audit processes.",
+      "response": "Acme Access automates access reviews, reducing the manual toil often associated with audit spreadsheets."
+    }
+  ],
+  "gaps": [
+    "SEC EDGAR: skipped, set FOOTHOLD_CONTACT (the SEC asks for a contact address)",
+    "Email opener left out: it did not rest on a checked signal",
+    "Linkedin opener left out: it did not rest on a checked signal",
+    "Call opener left out: it did not rest on a checked signal",
+    "2 statements from the model left out: the quoted passage was not in the cited source",
+    "Not found in the public sources checked: business model"
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "kind": "site",
+      "title": "Cloud Monitoring as a Service | Datadog",
+      "url": "https://www.datadoghq.com/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E2",
+      "kind": "site",
+      "title": "Pricing | Datadog",
+      "url": "https://www.datadoghq.com/pricing/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E3",
+      "kind": "site",
+      "title": "Customers | Datadog",
+      "url": "https://www.datadoghq.com/customers/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E4",
+      "kind": "site",
+      "title": "Join Our Pack | Datadog Careers",
+      "url": "https://careers.datadoghq.com/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E5",
+      "kind": "site",
+      "title": "Trust Hub | Datadog",
+      "url": "https://www.datadoghq.com/trust/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E6",
+      "kind": "site",
+      "title": "The Monitor | Datadog Official Blog",
+      "url": "https://www.datadoghq.com/blog/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E7",
+      "kind": "registry",
+      "title": "Wikidata: Datadog",
+      "url": "https://www.wikidata.org/wiki/Q16248637",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E8",
+      "kind": "stack",
+      "title": "Technologies visible on datadoghq.com",
+      "url": "https://www.datadoghq.com/",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E9",
+      "kind": "jobs",
+      "title": "Datadog job board (Greenhouse)",
+      "url": "https://boards.greenhouse.io/datadog",
+      "published": null,
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E10",
+      "kind": "job",
+      "title": "Job posting: Group Product Management, Cloud Security and Shared Capabilities (Paris, France)",
+      "url": "https://careers.datadoghq.com/detail/8405975/?gh_jid=8405975",
+      "published": "2026-11-23",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E11",
+      "kind": "job",
+      "title": "Job posting: Manager I, Engineering - Zero Trust Networking (New York, New York, USA)",
+      "url": "https://careers.datadoghq.com/detail/8350419/?gh_jid=8350419",
+      "published": "2026-11-03",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E12",
+      "kind": "job",
+      "title": "Job posting: Engineering Manager I, Commercial Audit (New York, New York, USA)",
+      "url": "https://careers.datadoghq.com/detail/8098939/?gh_jid=8098939",
+      "published": "2026-07-31",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E13",
+      "kind": "job",
+      "title": "Job posting: Senior Sales Engineer - FED (District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote)",
+      "url": "https://careers.datadoghq.com/detail/8144628/?gh_jid=8144628",
+      "published": "2026-08-21",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E14",
+      "kind": "news",
+      "title": "Datadog named challenger in Gartner 2026 SIEM report",
+      "url": "https://channellife.com.au/story/datadog-named-challenger-in-gartner-s-2026-siem-report",
+      "published": "2026-11-24",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E15",
+      "kind": "news",
+      "title": "Rocket taps Datadog COO as AI handles 65 % of servicing calls",
+      "url": "https://www.nationalmortgagenews.com/news/rocket-taps-datadog-coo-as-ai-handles-65-of-servicing-calls",
+      "published": "2026-11-13",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E16",
+      "kind": "news",
+      "title": "Datadog finds serious vulnerabilities in cloud workloads increase 4x in just nine months",
+      "url": "https://itwire.com/guest-articles/company-news/datadog-finds-serious-vulnerabilities-in-cloud-workloads-increase-4x-in-just-nine-months",
+      "published": "2026-11-11",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E17",
+      "kind": "news",
+      "title": "Datadog flags fourfold rise in cloud vulnerabilities",
+      "url": "https://itbrief.co.nz/story/datadog-flags-fourfold-rise-in-cloud-vulnerabilities",
+      "published": "2026-11-11",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E18",
+      "kind": "news",
+      "title": "Datadog ( NASDAQ : DDOG ) Price Target Cut to $290 . 00 by Analysts at Citigroup",
+      "url": "https://www.dailypolitical.com/2026/11/05/datadog-nasdaqddog-price-target-cut-to-290-00-by-analysts-at-citigroup.html",
+      "published": "2026-11-05",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E19",
+      "kind": "news",
+      "title": "Why Datadog Is Eyeing a $4B Buy of Cloud Defense Firm Upwind",
+      "url": "https://www.bankinfosecurity.com/blogs/datadog-eyeing-4b-buy-cloud-defense-firm-upwind-p-4225",
+      "published": "2026-10-23",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E20",
+      "kind": "news",
+      "title": "Datadog ( NASDAQ : DDOG ) versus VTEX ( NYSE : VTEX ) Head to Head Analysis",
+      "url": "https://www.themarketsdaily.com/2026/10/21/datadog-nasdaqddog-versus-vtex-nysevtex-head-to-head-analysis.html",
+      "published": "2026-10-21",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E21",
+      "kind": "news",
+      "title": "S & P 500 Stocks : Sandisk , Datadog , Amazon Lead As AI Stocks Rebound",
+      "url": "https://www.investors.com/news/sp-500-stocks-sandisk-datadog-amazon-lead-ai-stocks-rebound/",
+      "published": "2026-10-19",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E22",
+      "kind": "news",
+      "title": "Datadog ( NASDAQ : DDOG ) Stock Price Up 4 . 7 % – What Next ?",
+      "url": "https://www.themarketsdaily.com/2026/10/19/datadog-nasdaqddog-stock-price-up-4-7-whats-next.html",
+      "published": "2026-10-19",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E23",
+      "kind": "news",
+      "title": "Here Are Monday Top Wall Street Analyst Research Calls : Ameriprise Financial , Boyd Gaming , CoreWeave , Datadog , Intel , JetBlue Airways , PayPal Holdings , Pinterest , Whirlpool , and More",
+      "url": "https://www.aol.com/articles/monday-top-wall-street-analyst-141219000.html",
+      "published": "2026-10-19",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E24",
+      "kind": "news",
+      "title": "Datadog , Inc . $DDOG Stock Purchased by TD Waterhouse Canada Inc .",
+      "url": "https://www.tickerreport.com/banking-finance/13623908/datadog-inc-ddog-stock-purchased-by-td-waterhouse-canada-inc.html",
+      "published": "2026-10-17",
+      "fetched": "2026-11-24"
+    },
+    {
+      "id": "E25",
+      "kind": "news",
+      "title": "Datadog , Inc . $DDOG Stock Purchased by NFSG Corp",
+      "url": "https://www.dailypolitical.com/2026/10/16/datadog-inc-ddog-stock-purchased-by-nfsg-corp.html",
+      "published": "2026-10-16",
+      "fetched": "2026-11-24"
+    }
+  ]
+}
