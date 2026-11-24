@@ -49,8 +49,9 @@ Each account gets `briefs/<domain>.md` and `briefs/<domain>.json`, and each run 
 the column names to Account Name / Website). The other columns (fit score, top signal,
 openers, gaps) map to custom properties you create once in the CRM.
 
-A domain is the most reliable input. A bare name is resolved through Wikidata, and
-foothold stops rather than guess when it cannot find the official website.
+A domain is the most reliable input. A bare name is resolved through Wikidata, only to
+an entry that carries that exact name, looks like a company and lists an official
+website; otherwise foothold stops and asks for the domain.
 
 ## Choosing the model
 
@@ -58,12 +59,19 @@ foothold stops rather than guess when it cannot find the official website.
 |---|---|
 | Claude API | `ANTHROPIC_API_KEY`, and the `claude` extra |
 | Local (LM Studio, Ollama, llama.cpp) | nothing: `http://localhost:1234/v1` and the loaded model by default; `--base-url http://localhost:11434/v1` for Ollama |
-| Any OpenAI-compatible API | `OPENAI_API_KEY`, plus `--base-url` for another host |
+| Any OpenAI-compatible API | `OPENAI_API_KEY` and `--model`, plus `--base-url` for another host |
 
-`--provider`, `--model` and `--base-url` (or `FOOTHOLD_PROVIDER`, `FOOTHOLD_MODEL`,
-`FOOTHOLD_BASE_URL`) override the defaults. Variables can live in a `.env` file in the
-folder you run foothold from. With a local model nothing leaves your machine except the
-requests to the public sources below.
+Without `--provider`, foothold uses the Claude API if `ANTHROPIC_API_KEY` is set, then
+the OpenAI API if `OPENAI_API_KEY` is set, then a local server. It prints the provider,
+model and address it is about to use. `--provider`, `--model` and `--base-url` (or
+`FOOTHOLD_PROVIDER`, `FOOTHOLD_MODEL`, `FOOTHOLD_BASE_URL`) override this, and an
+address given without a provider is treated as an OpenAI-compatible server, so an
+Anthropic key is never sent to it.
+
+Variables can live in a `.env` file in the folder you run foothold from. A `.env` that
+sets the address while the key comes from your own environment is refused: a folder
+someone shared with you cannot redirect your key. With a local model nothing leaves your
+machine except the requests to the public sources below.
 
 ## Sources
 
@@ -81,7 +89,11 @@ public APIs are called under their own terms.
 | SEC EDGAR | Revenue, dated 8-K events by item (results, acquisitions, officer changes) | `FOOTHOLD_CONTACT`, the contact address the SEC asks for |
 | recherche-entreprises.api.gouv.fr | French register: creation date, activity code, size band | |
 | Apollo | Company fields only (industry, headcount, funding stage) | `APOLLO_API_KEY` |
-| Bright Data Web Unlocker | Retry for a page that refuses a plain request, still subject to robots.txt | `BRIGHTDATA_API_KEY`, `BRIGHTDATA_ZONE` |
+| Bright Data Web Unlocker | Second try for a company page that answers 403 | `BRIGHTDATA_API_KEY`, `BRIGHTDATA_ZONE` |
+
+The Bright Data option is off unless you set both variables. It gets past bot protection
+on pages that `robots.txt` allows, and never retries a "slow down" answer (429, 503).
+Whether that suits a given site's terms is your call.
 
 ## No personal data
 
@@ -103,12 +115,18 @@ The model never gets the last word on a fact.
 3. Code looks for that quote in that evidence. No match, no statement.
 4. The fit score is computed by code from the criteria verdicts and your weights. A
    criterion nobody could check counts as not met and is shown as `unknown`.
-5. Signal dates come from the source, not from the model, and signals older than
-   `signal_window_days` are left out.
+5. Signal dates come from the source, not from the model, and dated signals older than
+   `signal_window_days` are left out. A source with no date (a company page, the visible
+   stack) gives an undated signal, shown as such.
 6. An opener is kept only if it rests on a signal that survived these checks.
 
-Web pages are untrusted input: text that tries to instruct the model cannot change the
-score, since a verdict without a matching quote is discarded.
+Web pages are untrusted input. Text a visitor cannot see is dropped before the model
+reads the page, a page cannot open or close an evidence block, a verdict without a
+matching quote is discarded, and links are removed from everything the model writes
+freely (openers, reasons, objections). What the checks cannot do is judge meaning: the
+quote proves the passage is in the source, not that it supports the verdict. A page that
+lies about its company, or a weak model that cites an irrelevant passage, still gets
+through, which is why every verdict shows its quote.
 
 ## Example
 
@@ -129,6 +147,9 @@ stay `unknown` and the gaps say so.
 
 ## Limits
 
+- The local web page listens on 127.0.0.1 only and checks a token on every action, but
+  any program running under your account can read that token. Do not run `serve` on a
+  shared machine.
 - The quote check proves the passage exists in the source. The sentence summarising it
   is still written by a model: read the quote before you send anything.
 - A small local model finds fewer facts and words them less well than a large one. The
