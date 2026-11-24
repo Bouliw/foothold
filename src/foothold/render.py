@@ -3,6 +3,7 @@ import csv
 import io
 import json
 import re
+from urllib.parse import quote
 
 MISSING = 'Not found in the public sources checked.'
 FIELDS = (('summary', 'What they do'), ('size', 'Size'), ('markets', 'Markets'), ('business_model', 'Business model'))
@@ -23,7 +24,7 @@ def _md(text):
 def _link(label, url):
     if not str(url).startswith(('http://', 'https://')):
         return _md(label)
-    return f'[{_md(label)}]({url.replace(" ", "%20").replace("(", "%28").replace(")", "%29")})'
+    return f'[{_md(label)}]({quote(str(url), safe=":/?#[]@!$&*+,;=%~.-_")})'
 
 
 def _dated(item):
@@ -33,7 +34,7 @@ def _dated(item):
 def to_markdown(brief):
     a, fit = brief['account'], brief['fit']
     out = [f'# {_md(a["name"])}: account brief', '',
-           f'{a["domain"]} · researched {brief["researched"]} · offer: {_md(brief["offer"])} · model: {_md(brief["model"])}', '',
+           f'{_md(a["domain"])} · researched {brief["researched"]} · offer: {_md(brief["offer"])} · model: {_md(brief["model"])}', '',
            f'## Fit: {fit["score"]}/100', '']
     if fit['unknown']:
         out += [f'{fit["unknown"]} of {len(fit["criteria"])} criteria could not be checked from public sources; '

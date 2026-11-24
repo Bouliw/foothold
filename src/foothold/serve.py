@@ -42,7 +42,7 @@ def make_handler(offer, cfg, out_dir, port, token):
             return False
 
         def _authorised(self):
-            if hmac.compare_digest(self.headers.get('X-Foothold-Token', ''), token):
+            if hmac.compare_digest(self.headers.get('X-Foothold-Token', '').encode('utf-8', 'replace'), token.encode()):
                 return True
             self._send(403, {'error': 'missing or wrong token: reload the page'})
             return False
@@ -91,6 +91,8 @@ def make_handler(offer, cfg, out_dir, port, token):
                     cli.save(brief, out_dir)
                 except (sources.Unresolved, fetch.FetchError, llm.LLMError) as e:
                     return self._send(502, {'error': str(e)})
+                except Exception as e:  # one odd page or model answer must not leave the request hanging
+                    return self._send(500, {'error': f'unexpected {type(e).__name__}: {e}'})
             self._send(200, _bundle(brief))
 
     return Handler

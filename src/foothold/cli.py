@@ -13,6 +13,10 @@ from urllib.parse import urlsplit
 from . import __version__, analyze, fetch, llm, render, sources
 
 
+COLUMNS = {'company': 'name', 'company name': 'name', 'account': 'name', 'account name': 'name',
+           'website': 'domain', 'url': 'domain', 'company domain name': 'domain'}
+
+
 def parse_company(value):
     """'Datadog', 'datadoghq.com' or 'https://www.datadoghq.com/about' as an account."""
     value = value.strip()
@@ -28,14 +32,16 @@ def read_accounts(path):
         rows = [row for row in csv.reader(f) if any(cell.strip() for cell in row)]
     if not rows:
         return []
-    header = [h.strip().lower() for h in rows[0]]
+    header = [COLUMNS.get(h.strip().lower(), h.strip().lower()) for h in rows[0]]
     if not {'name', 'domain'} & set(header):
         return [parse_company(row[0]) for row in rows]
     accounts = []
     for row in rows[1:]:
         fields = {k: v.strip() for k, v in zip(header, row) if v.strip()}
         account = parse_company(fields['domain']) if fields.get('domain') else {}
-        accounts.append(account | {k: fields[k] for k in ('name', 'country', 'ticker') if k in fields})
+        account |= {k: fields[k] for k in ('name', 'country', 'ticker') if k in fields}
+        if account.get('name') or account.get('domain'):
+            accounts.append(account)
     return accounts
 
 
@@ -64,12 +70,17 @@ def save(brief, out_dir):
 
 
 def load_env(path='.env'):
-    """KEY=value lines from a .env file in the current folder; the real environment wins."""
+    """KEY=value lines from a .env file in the current folder; the real environment wins. Returns the names
+    this file set."""
+    used = set()
     if os.path.exists(path):
         for line in Path(path).read_text(encoding='utf-8').splitlines():
             key, sep, value = line.partition('=')
-            if sep and key.strip() and not key.lstrip().startswith('#'):
-                os.environ.setdefault(key.strip(), value.strip().strip('"\''))
+            key = key.strip().removeprefix('export ').strip()
+            if sep and key and not key.startswith('#') and key not in os.environ:
+                os.environ[key] = value.strip().strip('"\'')
+                used.add(key)
+    return used
 
 
 def main(argv=None):
@@ -95,7 +106,7 @@ def main(argv=None):
     web.add_argument('--no-open', action='store_true', help='do not open the browser')
     args = parser.parse_args(argv)
 
-    load_env()
+    from_file = load_env()
     for flag, variable in (('provider', 'FOOTHOLD_PROVIDER'), ('model', 'FOOTHOLD_MODEL'), ('base_url', 'FOOTHOLD_BASE_URL')):
         if getattr(args, flag):
             os.environ[variable] = getattr(args, flag)
@@ -103,6 +114,13 @@ def main(argv=None):
     try:
         offer = analyze.load_offer(args.offer)
         cfg = llm.settings()
+        # A .env that came with a shared folder must not send a key from your own environment somewhere else
+        key = {'anthropic': 'ANTHROPIC_API_KEY', 'openai': 'OPENAI_API_KEY'}.get(cfg['provider'])
+        if key and 'FOOTHOLD_BASE_URL' in from_file and key not in from_file:
+            raise ValueError(f'.env sets FOOTHOLD_BASE_URL but {key} comes from your environment: '
+                             f'pass --base-url yourself if you trust that address')
+        print(f'Model: {cfg["provider"]}' + (f' {cfg["model"]}' if cfg['model'] else '') +
+              (f' at {cfg["base_url"]}' if cfg['base_url'] else ''), file=sys.stderr)
         accounts = [parse_company(args.company)] if args.command == 'research' else \
             read_accounts(args.csv) if args.command == 'batch' else []
     except (ValueError, OSError, llm.LLMError) as e:
@@ -119,6 +137,10 @@ def main(argv=None):
         except (sources.Unresolved, fetch.FetchError, llm.LLMError) as e:
             failed += 1
             print(f'{label}: failed, {e}', file=sys.stderr)
+            continue
+        except Exception as e:  # one account never stops the others
+            failed += 1
+            print(f'{label}: failed, unexpected {type(e).__name__}: {e}', file=sys.stderr)
             continue
         briefs.append(brief)
         print(f'{brief["account"]["name"]}: fit {brief["fit"]["score"]}/100, {len(brief["signals"])} signals, '

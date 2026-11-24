@@ -19,8 +19,10 @@ class LLMError(Exception):
 
 def settings():
     env = os.environ
-    provider = env.get('FOOTHOLD_PROVIDER') or ('anthropic' if env.get('ANTHROPIC_API_KEY') else
-                                                 'openai' if env.get('OPENAI_API_KEY') else 'local')
+    # An address given without a provider is an OpenAI-compatible server: an Anthropic key is never sent to it
+    provider = env.get('FOOTHOLD_PROVIDER') or (
+        'anthropic' if env.get('ANTHROPIC_API_KEY') and not env.get('FOOTHOLD_BASE_URL') else
+        'openai' if env.get('OPENAI_API_KEY') else 'local')
     if provider not in ('anthropic', 'openai', 'local'):
         raise LLMError(f'unknown provider "{provider}": use anthropic, openai or local')
     return {'provider': provider, 'model': env.get('FOOTHOLD_MODEL', ''), 'base_url': env.get('FOOTHOLD_BASE_URL', '')}
@@ -80,6 +82,7 @@ def _anthropic(system, prompt, cfg):
         raise LLMError(f'Anthropic API error {e.status_code}: {e.message}')
     except anthropic.APIConnectionError:
         raise LLMError('cannot reach the Anthropic API')
+    cfg['model'] = message.model  # the model that answered, which a fallback may have changed
     if message.stop_reason == 'refusal':
         raise LLMError('the model declined the request')
     if message.stop_reason == 'max_tokens':

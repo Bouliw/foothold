@@ -69,12 +69,14 @@ def load_offer(path):
     if not isinstance(criteria, list) or not criteria or not all(isinstance(c, dict) and c.get('name') for c in criteria):
         raise ValueError(f'{path}: at least one [[criteria]] with a name is needed to score the fit')
     for c in criteria:
-        if not isinstance(c.setdefault('weight', 1), (int, float)) or c['weight'] <= 0:
+        weight = c.setdefault('weight', 1)
+        if isinstance(weight, bool) or not isinstance(weight, (int, float)) or not 0 < weight < float('inf'):
             raise ValueError(f'{path}: the weight of "{c["name"]}" must be a positive number')
     for key in ('problems', 'competitors', 'keywords', 'personas', 'regulations'):
         if not (isinstance(offer.setdefault(key, []), list) and all(isinstance(x, str) for x in offer[key])):
             raise ValueError(f'{path}: {key} must be a list of strings')
-    if not isinstance(offer.setdefault('signal_window_days', 180), int):
+    window = offer.setdefault('signal_window_days', 180)
+    if isinstance(window, bool) or not isinstance(window, int) or window < 1:
         raise ValueError(f'{path}: signal_window_days must be a whole number')
     return offer
 
@@ -118,11 +120,19 @@ the product beyond the offer above, no claim about the account beyond the eviden
 - objections: the 3 most likely objections from this account, each with a response."""
 
 
+MIN_QUOTE_WORDS = 4  # shorter than this, a quote such as "privacy policy" proves nothing
+
+
+def _plain(value):
+    """Free text from the model, without links: a page could ask for one to be slipped into an opener."""
+    return re.sub(r'(?:https?://|www\.)\S+', '[link removed]', str(value or '').strip())
+
+
 def _find(evidence, ref, quote):
     """The evidence a fact cites, if its quote is really there."""
     source = evidence.get(str(ref or '').strip())
     passage = norm(str(quote or '')).strip(' ."\'')
-    if source and len(passage) >= 12 and passage in norm(f'{source.title}\n{source.text}'):
+    if source and len(passage.split()) >= MIN_QUOTE_WORDS and passage in norm(f'{source.title}\n{source.text}'):
         return source
     return None
 
@@ -133,7 +143,7 @@ def _fact(raw, evidence):
     source = _find(evidence, raw.get('evidence'), raw.get('quote'))
     if not source:
         return None, True
-    return {'text': str(raw['text']).strip(), 'quote': str(raw['quote']).strip(), 'source': source.id,
+    return {'text': _plain(raw['text']), 'quote': str(raw['quote']).strip(), 'source': source.id,
             'url': source.url, 'source_title': source.title, 'published': source.published,
             'collected': source.fetched}, False
 
@@ -149,22 +159,27 @@ def _clean(value):
     return value
 
 
+def _list(value):
+    return value if isinstance(value, list) else []
+
+
 def validate(raw, offer, evidence, gaps):
     """Keeps what can be traced to a source and computes the score. Returns the checked half of the brief."""
     by_id = {e.id: e for e in evidence}
     dropped = 0
     raw = raw if isinstance(raw, dict) else {}
 
+    told = raw.get('company') if isinstance(raw.get('company'), dict) else {}
     company = {}
     for field in ('summary', 'size', 'markets', 'business_model'):
-        company[field], lost = _fact((raw.get('company') or {}).get(field), by_id)
+        company[field], lost = _fact(told.get(field), by_id)
         dropped += lost
 
-    answers = {str(c.get('name', '')).strip().lower(): c for c in raw.get('criteria') or [] if isinstance(c, dict)}
+    answers = {str(c.get('name', '')).strip().lower(): c for c in _list(raw.get('criteria')) if isinstance(c, dict)}
     criteria = []
     for c in offer['criteria']:
         answer = answers.get(c['name'].strip().lower(), {})
-        verdict = answer.get('verdict') if answer.get('verdict') in ('yes', 'no') else 'unknown'
+        verdict = answer.get('verdict') if isinstance(answer.get('verdict'), str) and answer['verdict'] in ('yes', 'no') else 'unknown'
         fact = None
         if verdict != 'unknown':
             fact, lost = _fact({**answer, 'text': answer.get('why') or verdict}, by_id)
@@ -180,7 +195,7 @@ def validate(raw, offer, evidence, gaps):
 
     oldest = (date.today() - timedelta(days=offer['signal_window_days'])).isoformat()
     signals, position = [], {}
-    for index, s in enumerate(raw.get('signals') or [], 1):
+    for index, s in enumerate(_list(raw.get('signals')), 1):
         fact, lost = _fact(s, by_id)
         dropped += lost
         if not fact:
@@ -192,30 +207,30 @@ def validate(raw, offer, evidence, gaps):
         if when and when < oldest:
             gaps.append(f'Signal left out, older than {offer["signal_window_days"]} days: {clip(fact["text"], 90)}')
             continue
-        kind = s.get('type') if s.get('type') in SIGNAL_TYPES else 'other'
+        kind = s['type'] if isinstance(s.get('type'), str) and s['type'] in SIGNAL_TYPES else 'other'
         signals.append({'type': kind, 'date': when, **fact})
         position[index] = signals[-1]
     signals.sort(key=lambda s: s['date'] or '', reverse=True)
 
-    hooks = {}
+    hooks, drafts = {}, raw.get('hooks') if isinstance(raw.get('hooks'), dict) else {}
     for channel in CHANNELS:
-        hook = (raw.get('hooks') or {}).get(channel)
+        hook = drafts.get(channel)
         if not isinstance(hook, dict) or not hook.get('body'):
             continue
         try:
             anchor = position.get(int(hook.get('signal') or 0))
-        except (TypeError, ValueError):
+        except (TypeError, ValueError, OverflowError):
             anchor = None
         if not anchor:
             gaps.append(f'{channel.capitalize()} opener left out: it did not rest on a checked signal')
             continue
-        hooks[channel] = {'body': str(hook['body']).strip(), 'signal': signals.index(anchor) + 1,
-                          **({'subject': str(hook.get('subject', '')).strip()} if channel == 'email' else {})}
+        hooks[channel] = {'body': _plain(hook['body']), 'signal': signals.index(anchor) + 1,
+                          **({'subject': _plain(hook.get('subject'))} if channel == 'email' else {})}
 
-    roles = [{'title': str(r['title']).strip(), 'why': str(r.get('why', '')).strip()}
-             for r in raw.get('roles') or [] if isinstance(r, dict) and r.get('title')][:6]
-    objections = [{'objection': str(o['objection']).strip(), 'response': str(o['response']).strip()}
-                  for o in raw.get('objections') or [] if isinstance(o, dict) and o.get('objection') and o.get('response')][:5]
+    roles = [{'title': _plain(r['title']), 'why': _plain(r.get('why'))}
+             for r in _list(raw.get('roles')) if isinstance(r, dict) and r.get('title')][:6]
+    objections = [{'objection': _plain(o['objection']), 'response': _plain(o['response'])}
+                  for o in _list(raw.get('objections')) if isinstance(o, dict) and o.get('objection') and o.get('response')][:5]
     if dropped:
         gaps.append(f'{dropped} statement{"s" if dropped > 1 else ""} from the model left out: '
                     f'the quoted passage was not in the cited source')
