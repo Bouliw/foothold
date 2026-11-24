@@ -30,13 +30,20 @@ class Evidence:
     id: str = ''
 
 
+URL_SAFE = ":/?#[]@!$&'*+,;=%~.-_"
+
+
 def _today():
     return date.today().isoformat()
 
 
 def _ev(kind, url, title, body, published=None):
-    body = re.sub(r'</?evidence', '', scrub(body), flags=re.I)  # a page cannot close its own evidence block
-    return Evidence(kind, url, ' '.join(scrub(title).split())[:200], body, published, _today())
+    # No "<" survives, so a page cannot close its evidence block or open a fake one; no address can carry a
+    # line break or markup into a brief
+    def plain(text):
+        return scrub(text).replace('<', '‹')
+    url = quote(str(url), safe=URL_SAFE)
+    return Evidence(kind, url, ' '.join(plain(str(title)[:400]).split())[:200], plain(body), published, _today())
 
 
 def same_site(host, domain):
@@ -75,30 +82,30 @@ TECH = {
     'New Relic': r'js-agent\.newrelic\.com|bam\.nr-data\.net', 'Next.js': r'/_next/static/|__NEXT_DATA__',
     'Nuxt': r'/_nuxt/', 'Gatsby': r'id="___gatsby"', 'WordPress': r'/wp-content/|/wp-includes/',
     'Webflow': r'assets\.website-files\.com|data-wf-site', 'Contentful': r'ctfassets\.net',
-    'Shopify': r'cdn\.shopify\.com', 'Stripe': r'js\.stripe\.com', 'OneTrust': r'cdn\.cookielaw\.org|onetrust',
+    'Shopify': r'cdn\.shopify\.com', 'Stripe': r'js\.stripe\.com', 'OneTrust': r'cdn\.cookielaw\.org|onetrust\.com',
     'Cookiebot': r'consent\.cookiebot\.com', 'TrustArc': r'consent\.trustarc\.com', 'Okta': r'oktacdn\.com',
-    'Auth0': r'cdn\.auth0\.com', 'reCAPTCHA': r'google\.com/recaptcha', 'Cloudflare': r'^header server: cloudflare',
-    'Vercel': r'^header x-vercel-id:', 'Fastly': r'^header (?:x-served-by: cache-|x-fastly)',
-    'Amazon CloudFront': r'^header x-amz-cf-id:', 'Akamai': r'^header server: akamai',
+    'Auth0': r'cdn\.auth0\.com', 'reCAPTCHA': r'google\.com/recaptcha', 'Cloudflare': r'\x00header server: cloudflare',
+    'Vercel': r'\x00header x-vercel-id:', 'Fastly': r'\x00header (?:x-served-by: cache-|x-fastly)',
+    'Amazon CloudFront': r'\x00header x-amz-cf-id:', 'Akamai': r'\x00header server: akamai',
 }
 
 ATS = {
     'greenhouse': re.compile(r'(?:boards|job-boards)(?:\.eu)?\.greenhouse\.io/(?:embed/job_board\?for=)?([\w-]+)'
-                             r'|boards-api\.greenhouse\.io/v1/boards/([\w-]+)'),
-    'lever': re.compile(r'jobs\.(?:eu\.)?lever\.co/([\w-]+)'),
-    'ashby': re.compile(r'jobs\.ashbyhq\.com/([\w.-]+)'),
-    'workday': re.compile(r'([\w-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([\w-]+)'),
+                             r'|boards-api\.greenhouse\.io/v1/boards/([\w-]+)', re.A),
+    'lever': re.compile(r'jobs\.(?:eu\.)?lever\.co/([\w-]+)', re.A),
+    'ashby': re.compile(r'jobs\.ashbyhq\.com/([\w.-]+)', re.A),
+    'workday': re.compile(r'([\w-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([\w-]+)', re.A),
 }
 
 
 def _page(url):
-    """A page, through Bright Data's unlocker when the site refuses us, robots.txt allows the page and the user
-    has set a key and a zone."""
+    """A page, through Bright Data's unlocker when the site answers 403, robots.txt allows the page and the user
+    has set a key and a zone. "Slow down" answers (429, 503) are respected, not worked around."""
     try:
         return fetch.get(url)
     except FetchError as e:
         key, zone = os.environ.get('BRIGHTDATA_API_KEY'), os.environ.get('BRIGHTDATA_ZONE')
-        if not (key and zone and e.status in (403, 429, 503) and fetch.allowed(url)):
+        if not (key and zone and e.status == 403 and fetch.allowed(url)):
             raise
         body = json.dumps({'zone': zone, 'url': url, 'format': 'raw'}).encode()
         page = fetch.get('https://api.brightdata.com/request', data=body, robots=False,
@@ -152,7 +159,8 @@ def crawl_site(domain, gaps):
 
 
 def stack(domain, pages):
-    hay = '\n'.join('\n'.join(f'header {k}: {v}' for k, v in page.headers.items()) + '\n' + page.text
+    # Headers get a marker no page text can contain, so a page cannot fake one
+    hay = '\n'.join('\n'.join(f'\x00header {k}: {v}' for k, v in page.headers.items()) + '\n' + page.text.replace('\x00', '')
                     for _, page, _ in pages).lower()
     found = [name for name, pattern in TECH.items() if re.search(pattern, hay, re.M)]
     if not found:
@@ -234,8 +242,8 @@ def jobs(name, domain, pages, offer, gaps):
             gaps.append(f'Job board ({board[0]}): {e}')
     if found is None:
         # No link on the site: try the usual board names, and keep one only if it says it is this company
-        key = name_key(name).replace(' ', '')
-        for slug in dict.fromkeys([domain.split('.')[0], key]):
+        guesses = [re.sub(r'[^a-z0-9-]', '', g) for g in (domain.split('.')[0], name_key(name).replace(' ', ''))]
+        for slug in dict.fromkeys(g for g in guesses if g):
             for ats, load in (('Greenhouse', _greenhouse), ('Lever', _lever), ('Ashby', _ashby)):
                 try:
                     listed, board_url = load(slug)
@@ -284,7 +292,7 @@ def _feed_items(xml):
         m = re.search(rf'<{tag}\b[^>]*>(.*?)</{tag}>', block, re.S | re.I)
         value = re.sub(r'^<!\[CDATA\[|\]\]>$', '', m[1].strip()) if m else ''
         return html.unescape(value)
-    for block in re.findall(r'<(?:item|entry)\b.*?</(?:item|entry)>', xml, re.S | re.I)[:40]:
+    for block in re.findall(r'<(?:item|entry)\b.*?</(?:item|entry)>', xml[:500_000], re.S | re.I)[:40]:
         href = re.search(r'<link\b[^>]*href="([^"]+)"', block)
         link = field(block, 'link') or (href[1] if href else '')
         when = field(block, 'pubDate') or field(block, 'published') or field(block, 'updated')
@@ -357,6 +365,9 @@ def _when(qualifiers):
     return iso_date(snaks[0]['datavalue']['value']['time'].replace('-00', '-01')) if snaks and 'datavalue' in snaks[0] else None
 
 
+BUSINESS_PROPS = ('P452', 'P1128', 'P414', 'P169', 'P2139', 'P1454')  # industry, staff, exchange, CEO, revenue, legal form
+
+
 def wikidata(name, domain):
     """The Wikidata entity whose official website is this domain (or, with no domain yet, the first company-like
     match that has one). Returns (evidence, domain) or None."""
@@ -371,6 +382,10 @@ def wikidata(name, domain):
         hosts = [(urlsplit(str(v)).hostname or '').removeprefix('www.') for v, _ in _claims(entity, 'P856')]
         if not hosts or (domain and not any(same_site(h, domain) or same_site(domain, h) for h in hosts)):
             continue
+        label = entity.get('labels', {}).get('en', {}).get('value', '')
+        # Resolving a bare name: the entry must carry that name and look like a company, or we do not guess
+        if not domain and (name_key(label) != name_key(name) or not any(_claims(entity, p) for p in BUSINESS_PROPS)):
+            continue
         refs = {prop: [v['id'] for v, _ in _claims(entity, prop) if isinstance(v, dict) and 'id' in v][:3]
                 for prop in ('P452', 'P17', 'P159', 'P414')}
         ids = [i for group in refs.values() for i in group]
@@ -379,7 +394,7 @@ def wikidata(name, domain):
             got = fetch.get_json(WIKIDATA + urlencode({'action': 'wbgetentities', 'ids': '|'.join(ids),
                                                        'props': 'labels', 'languages': 'en'}))['entities']
             labels = {i: e.get('labels', {}).get('en', {}).get('value', i) for i, e in got.items()}
-        label = entity.get('labels', {}).get('en', {}).get('value', name)
+        label = label or name
         lines = [f'{label}: {entity.get("descriptions", {}).get("en", {}).get("value", "no description")}.',
                  f'Official website: {hosts[0]}.']
         for prop, text in (('P452', 'Industry'), ('P17', 'Country'), ('P159', 'Headquarters'), ('P414', 'Listed on')):
@@ -461,6 +476,8 @@ def france(name):
     data = fetch.get_json('https://recherche-entreprises.api.gouv.fr/search?' + urlencode({'q': name, 'per_page': 5}))
     for c in data.get('results', []):
         if name_key(c.get('nom_raison_sociale') or c.get('nom_complet')) != name_key(name):
+            continue
+        if str(c.get('nature_juridique')) == '1000':  # a sole trader is registered under a person's name
             continue
         lines = [f'{c.get("nom_complet", name)} is registered in France (SIREN {c["siren"]}), created {c.get("date_creation", "?")}.',
                  f'Activity code (NAF): {c.get("activite_principale", "?")}. Size category: {c.get("categorie_entreprise") or "?"}.']

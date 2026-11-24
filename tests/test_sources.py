@@ -51,6 +51,44 @@ def test_a_guessed_board_must_name_the_company(monkeypatch):
     assert sources.jobs('Acme', 'acme.com', [], OFFER, gaps) == [] and 'no public' in gaps[0]
 
 
+def test_an_accented_name_only_tries_plain_board_names(monkeypatch):
+    tried = []
+
+    def load(slug):
+        tried.append(slug)
+        raise fetch.FetchError('HTTP 404', 404)
+    for name in ('_greenhouse', '_lever', '_ashby'):
+        monkeypatch.setattr(sources, name, load)
+    assert sources.jobs("L'Oréal", 'loreal.com', [page('https://loreal.com/', 'boards.greenhouse.io/é')], OFFER, []) == []
+    assert tried and all(slug.isascii() for slug in tried)
+
+
+def test_unlocker_only_answers_a_403_and_obeys_robots(monkeypatch):
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append(url)
+        if 'brightdata' in url:
+            return fetch.Page(url, 200, {}, 'unlocked', RECENT)
+        raise fetch.FetchError('refused', status['code'])
+    status = {'code': 429}
+    monkeypatch.setattr(fetch, 'get', get)
+    monkeypatch.setenv('BRIGHTDATA_API_KEY', 'k'), monkeypatch.setenv('BRIGHTDATA_ZONE', 'z')
+    monkeypatch.setattr(fetch, 'allowed', lambda url: False)
+    for code in (429, 503, 403):  # slow-down answers are respected; a 403 is not retried where robots.txt forbids
+        status['code'] = code
+        with pytest.raises(fetch.FetchError):
+            sources._page('https://acme.com/')
+    assert not any('brightdata' in c for c in calls)
+    monkeypatch.setattr(fetch, 'allowed', lambda url: True)
+    assert sources._page('https://acme.com/').text == 'unlocked'
+
+
+def test_evidence_addresses_carry_no_markup():
+    item = sources._ev('news', 'https://x.example/a\n<b>|"', 'T', 'body')
+    assert item.url == 'https://x.example/a%0A%3Cb%3E%7C%22'
+
+
 def test_feed_items_without_an_xml_parser():
     xml = ('<rss><item><title><![CDATA[Acme raises $50M]]></title><link>https://acme.com/a</link>'
            '<pubDate>Tue, 03 Nov 2026 10:00:00 GMT</pubDate><description>&lt;p&gt;Series C&lt;/p&gt;</description></item>'
@@ -107,6 +145,9 @@ def test_french_register_ignores_directors(monkeypatch):
          'activite_principale': '62.01Z', 'categorie_entreprise': 'ETI', 'tranche_effectif_salarie': '42',
          'annee_tranche_effectif_salarie': '2024', 'dirigeants': [{'nom': 'DUPONT', 'prenoms': 'JEANNE'}]}]})
     out = sources.france('Acme SAS')
+    monkeypatch.setattr(fetch, 'get_json', lambda url, **k: {'results': [
+        {'siren': '1', 'nom_complet': 'JEANNE DUPONT', 'nom_raison_sociale': 'JEANNE DUPONT', 'nature_juridique': '1000'}]})
+    assert sources.france('Jeanne Dupont') is None
     assert '1,000-1,999' in out.text and 'DUPONT' not in out.text and 'JEANNE' not in out.text
 
 
@@ -131,6 +172,9 @@ def test_wikidata_needs_a_matching_website(monkeypatch):
     assert domain == 'acme.com' and found.url.endswith('/Q2')
     assert 'Employees: 5,200 (as of 2025-12-31)' in found.text and 'Country: United States' in found.text and 'Founded: 2010' in found.text
     assert sources.wikidata('Acme', 'other.org') is None
+    # A bare name resolves only to an entry with that name that looks like a company (Q1 is a band)
+    assert sources.wikidata('Acme', None)[1] == 'acme.com'
+    assert sources.wikidata('Acme (band)', None) is None and sources.wikidata('Acme Rockets', None) is None
 
 
 def test_collect_turns_failures_into_gaps(monkeypatch):
