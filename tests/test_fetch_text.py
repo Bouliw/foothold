@@ -1,3 +1,5 @@
+import gzip
+import json
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -19,6 +21,11 @@ class Site(BaseHTTPRequestHandler):
             '/to-file': (302, 'text/html', b'', {'Location': 'file:///etc/passwd'}),
             '/big': (200, 'text/html', b'x' * 5000, {}),
             '/image': (200, 'image/png', b'\x89PNG', {}),
+            '/to-bad': (302, 'text/html', b'', {'Location': 'http://[x'}),
+            '/to-inside': (302, 'text/html', b'', {'Location': 'http://127.0.0.2:9/admin'}),
+            '/to-other': (302, 'text/html', b'', {'Location': getattr(self.server, 'other', '') + '/echo'}),
+            '/echo': (200, 'text/plain', json.dumps(dict(self.headers)).encode(), {}),
+            '/bomb': (200, 'text/html', gzip.compress(b'0' * 5_000_000), {'Content-Encoding': 'gzip'}),
         }
         status, ctype, body, extra = routes.get(self.path, (404, 'text/plain', b'', {}))
         self.send_response(status)
@@ -83,6 +90,64 @@ def test_redirects_are_checked_again(site):
         fetch.get(site + '/to-file')
 
 
+def test_odd_addresses_are_errors_not_crashes(site):
+    for path in ('/caf\u00e9', '/to-bad'):
+        with pytest.raises(fetch.FetchError):
+            fetch.get(site + path)
+    with pytest.raises(fetch.FetchError):
+        fetch.get('http://[x/')
+
+
+def test_a_redirect_to_a_private_address_is_refused(site, monkeypatch):
+    monkeypatch.setattr(fetch, 'is_public_ip', lambda ip: ip != '127.0.0.2')
+    with pytest.raises(fetch.FetchError, match='not a public address'):
+        fetch.get(site + '/to-inside')
+
+
+def test_keys_do_not_follow_a_redirect_to_another_host(site):
+    other = ThreadingHTTPServer(('127.0.0.1', 0), Site)
+    threading.Thread(target=other.serve_forever, daemon=True).start()
+    try:
+        fetch.use_cache, saved = False, fetch.use_cache
+        import gc
+        server = next(o for o in gc.get_objects() if isinstance(o, ThreadingHTTPServer) and site.endswith(str(o.server_port)))
+        server.other = f'http://127.0.0.1:{other.server_port}'
+        seen = json.loads(fetch.get(site + '/to-other', headers={'Authorization': 'Bearer k', 'X-Api-Key': 'k', 'X-Other': '1'}).text)
+        assert 'Authorization' not in seen and 'X-Api-Key' not in seen and seen['X-Other'] == '1'
+    finally:
+        fetch.use_cache = saved
+        other.shutdown()
+
+
+def test_a_compressed_answer_cannot_exceed_the_size_cap(site):
+    with pytest.raises(fetch.FetchError, match='larger than'):
+        fetch.get(site + '/bomb', max_bytes=100_000)
+
+
+def test_robots_rules_follow_rfc_9309():
+    rules = fetch.Robots('User-agent: *\nAllow: /\nDisallow: /careers\nDisallow: /*?\nDisallow: /*.pdf$\nAllow: /careers/open\n'
+                         'Crawl-delay: 3\n\nUser-agent: otherbot\nDisallow: /\n')
+    can = lambda path: rules.can_fetch('https://x.example' + path)
+    assert can('/') and can('/about') and can('/careers/open/1') and can('/a.pdf.html')
+    assert not can('/careers') and not can('/careers/team') and not can('/search?q=1') and not can('/a/b.pdf')
+    assert rules.delay == 3
+    named = fetch.Robots('User-agent: *\nDisallow:\n\nUser-agent: Foothold\nDisallow: /private\n')
+    assert not named.can_fetch('https://x.example/private') and named.can_fetch('https://x.example/other')
+
+
+@pytest.mark.parametrize('status,expected', [(404, True), (403, True), (500, False), (429, False)])
+def test_missing_robots_allows_and_broken_robots_forbids(monkeypatch, status, expected):
+    monkeypatch.setattr(fetch, '_robots', {})
+    monkeypatch.setattr(fetch, '_follow', lambda *a: (a[0], status, {}, b''))
+    assert fetch.allowed('https://x.example/page') is expected
+
+
+def test_hidden_text_is_not_evidence():
+    page = ('<p>Shown</p><div hidden>secret <div>nested</div> more</div><span style="display: none">gone</span>'
+            '<p aria-hidden="true">icon</p><input type="hidden" value="x"><p>Also shown</p>')
+    assert text.to_text(page) == 'Shown\nAlso shown'
+
+
 def test_size_and_type_limits(site):
     with pytest.raises(fetch.FetchError, match='larger than'):
         fetch.get(site + '/big', max_bytes=1000)
@@ -100,6 +165,11 @@ def test_html_to_text_skips_scripts_and_keeps_links():
 def test_contact_details_are_removed_but_dates_stay():
     out = text.scrub('Write to jane.doe@corp.example or call +1 (415) 555-0100 before 2026-10-12.')
     assert '@' not in out and '555' not in out and '2026-10-12' in out
+    assert '45' not in text.scrub('Standard : 01 23 45 67 89 ou +33 1 23 45 67 89')
+    import time
+    start = time.monotonic()
+    text.scrub('a' * 200_000)
+    assert time.monotonic() - start < 2
 
 
 def test_quotes_match_despite_typography():

@@ -9,8 +9,12 @@ SKIP = {'script', 'style', 'noscript', 'svg', 'template'}
 BLOCK = {'p', 'div', 'br', 'li', 'ul', 'ol', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'tr', 'td', 'th', 'table', 'section',
          'article', 'header', 'footer', 'nav', 'main', 'aside', 'blockquote', 'dt', 'dd'}
 
-EMAIL = re.compile(r'[\w.+-]+@[\w-]+(?:\.[\w-]+)+')
-PHONE = re.compile(r'(?:\+\d{1,3}[\s.-]?)?\(?\d{2,4}\)?[\s.-]\d{3,4}[\s.-]\d{3,4}\b')
+# The look-behind keeps the search linear on long runs of letters
+EMAIL = re.compile(r'(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+')
+PHONE = re.compile(r'(?:\+\d{1,3}[\s.-]?)?\(?\d{2,4}\)?[\s.-]\d{3,4}[\s.-]\d{3,4}\b'
+                   r'|(?:\+33[\s.-]?|\b0)\d(?:[\s.-]?\d{2}){4}\b')
+VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'}
+HIDDEN_STYLE = re.compile(r'display\s*:\s*none|visibility\s*:\s*hidden', re.I)
 
 
 class Doc(HTMLParser):
@@ -20,6 +24,7 @@ class Doc(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.base, self.parts, self.links, self.feeds, self.meta, self.title = base_url, [], [], [], {}, ''
         self._skip, self._in_title, self._href, self._label = 0, False, None, []
+        self._hidden = []  # tag and depth of the hidden element being skipped
 
     def _abs(self, href):
         try:
@@ -29,6 +34,13 @@ class Doc(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         a = {k: v or '' for k, v in attrs}
+        if self._hidden:
+            self._hidden[1] += tag == self._hidden[0]
+            return
+        # Text a visitor cannot see is not evidence, and is where a page would hide instructions
+        if tag not in VOID and ('hidden' in a or a.get('aria-hidden') == 'true' or HIDDEN_STYLE.search(a.get('style', ''))):
+            self._hidden = [tag, 1]
+            return
         if tag in SKIP:
             self._skip += 1
         elif tag == 'meta':
@@ -42,12 +54,15 @@ class Doc(HTMLParser):
             self._href, self._label = self._abs(a['href']), []
         elif tag == 'title':
             self._in_title = True
-        elif tag == 'time' and a.get('datetime'):
-            self.meta.setdefault('time', a['datetime'])
         if tag in BLOCK:
             self.parts.append('\n')
 
     def handle_endtag(self, tag):
+        if self._hidden:
+            self._hidden[1] -= tag == self._hidden[0]
+            if not self._hidden[1]:
+                self._hidden = []
+            return
         if tag in SKIP:
             self._skip = max(0, self._skip - 1)
         elif tag == 'a' and self._href:
@@ -59,7 +74,7 @@ class Doc(HTMLParser):
             self.parts.append('\n')
 
     def handle_data(self, data):
-        if self._skip:
+        if self._skip or self._hidden:
             return
         if self._in_title:
             self.title += data
@@ -102,7 +117,7 @@ def norm(text):
     """Lower case, plain quotes and dashes, single spaces: what two copies of the same passage share."""
     text = unicodedata.normalize('NFKC', text or '').lower()
     text = re.sub('[‘’‚′]', "'", text)
-    text = re.sub('[“”„″]', '"', text)
+    text = re.sub('[“”„″]', '"', text).replace('‹', '<')
     text = re.sub('[‐‑‒–—―]', '-', text)
     return ' '.join(text.replace('[…]', ' ').replace('…', ' ').split())
 
