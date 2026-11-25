@@ -112,16 +112,16 @@ appears as published, with its link, in the list of sources.
 ## How it works
 
 ```mermaid
-flowchart TD
-    input["Company name or domain"] --> collect["Collect public sources"]
-    collect --> evidence["Numbered evidence with URL, dates and text, emails and phone numbers removed"]
-    offer["offer.toml with your product and weighted criteria"] --> model
-    evidence --> model["Model writes each statement with an evidence number and a verbatim quote"]
-    model --> check{"Quote found in that evidence?"}
-    check -- no --> dropped["Statement deleted and counted under Gaps"]
-    check -- yes --> score["Code computes the fit score, the dates and the signal window"]
-    score --> brief["Brief in Markdown, JSON and CRM CSV"]
-    dropped --> brief
+graph TD
+    A[Company name or domain] --> B[Collect public sources]
+    B --> C[Numbered evidence with its URL and dates]
+    O[Your offer file] --> D
+    C --> D[Model writes statements that each cite an evidence number and a quote]
+    D --> E{Is the quote in that evidence}
+    E -->|No| G[Statement deleted and counted under Gaps]
+    E -->|Yes| F[Code computes the fit score and the signal dates]
+    F --> H[Brief as Markdown and JSON and CRM CSV]
+    G --> H
 ```
 
 Collection and checking are plain code; the model only reads the evidence and proposes
