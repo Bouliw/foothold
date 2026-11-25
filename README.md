@@ -5,7 +5,7 @@
 
 # foothold
 
-[![CI](https://github.com/Bouliw/foothold/actions/workflows/ci.yml/badge.svg)](https://github.com/Bouliw/foothold/actions/workflows/ci.yml)
+[![CI](https://github.com/Bouliw/foothold/actions/workflows/ci.yml/badge.svg)](https://github.com/Bouliw/foothold/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Bouliw/foothold)](LICENSE)
 
 foothold does the account research an SDR or BDR does before a first touch. Give it a
 company and a file describing what you sell. It reads public sources and writes a brief:
