@@ -142,6 +142,18 @@ def test_missing_robots_allows_and_broken_robots_forbids(monkeypatch, status, ex
     assert fetch.allowed('https://x.example/page') is expected
 
 
+def test_a_challenge_page_is_not_a_robots_file_and_a_dead_host_is_not_a_robots_refusal(monkeypatch):
+    monkeypatch.setattr(fetch, '_robots', {})
+    monkeypatch.setattr(fetch, '_follow', lambda *a: (a[0], 200, {}, b'  <!doctype html><title>Checking your browser</title>'))
+    assert fetch.allowed('https://x.example/page') is False
+
+    def dead(*a):
+        raise fetch.FetchError('y.example: host not found')
+    monkeypatch.setattr(fetch, '_follow', dead)
+    with pytest.raises(fetch.FetchError, match='host not found'):
+        fetch.allowed('https://y.example/page')
+
+
 def test_hidden_text_is_not_evidence():
     page = ('<p>Shown</p><div hidden>secret <div>nested</div> more</div><span style="display: none">gone</span>'
             '<p aria-hidden="true">icon</p><input type="hidden" value="x"><p>Also shown</p>')

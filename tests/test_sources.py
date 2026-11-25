@@ -161,7 +161,7 @@ def test_wikidata_needs_a_matching_website(monkeypatch):
         if 'Q1%7CQ2' in url:
             return {'entities': {
                 'Q1': {'labels': {'en': {'value': 'Acme (band)'}}, 'claims': {'P856': claim('https://acmeband.example')}},
-                'Q2': {'labels': {'en': {'value': 'Acme'}}, 'descriptions': {'en': {'value': 'software company'}}, 'claims': {
+                'Q2': {'labels': {'mul': {'value': 'Acme'}}, 'descriptions': {'en': {'value': 'software company'}}, 'claims': {
                     'P856': claim('https://www.acme.com/'), 'P17': claim({'id': 'Q30'}),
                     'P571': claim({'time': '+2010-00-00T00:00:00Z'}),
                     'P1128': [{'rank': 'normal', 'mainsnak': {'snaktype': 'value', 'datavalue': {'value': {'amount': '+5200'}}},
@@ -175,6 +175,33 @@ def test_wikidata_needs_a_matching_website(monkeypatch):
     # A bare name resolves only to an entry with that name that looks like a company (Q1 is a band)
     assert sources.wikidata('Acme', None)[1] == 'acme.com'
     assert sources.wikidata('Acme (band)', None) is None and sources.wikidata('Acme Rockets', None) is None
+
+
+def test_wikidata_prefers_the_exact_name_over_a_subsidiary(monkeypatch):
+    def entry(site):
+        return {'claims': {'P856': [{'rank': 'normal', 'mainsnak': {'snaktype': 'value', 'datavalue': {'value': site}}}],
+                           'P112': [{'rank': 'normal', 'mainsnak': {'snaktype': 'value', 'datavalue': {'value': {'id': 'Q9'}}}}]}}
+
+    def fake(url, **kwargs):
+        if 'wbsearchentities' in url:
+            return {'search': [{'id': 'Q1', 'label': 'Acme GmbH'}, {'id': 'Q2', 'label': 'Acme'}]}
+        return {'entities': {'Q1': entry('https://acme.de') | {'labels': {'en': {'value': 'Acme GmbH'}}},
+                             'Q2': entry('https://acme.fr') | {'labels': {'en': {'value': 'Acme'}}}}}
+    monkeypatch.setattr(fetch, 'get_json', fake)
+    assert sources.wikidata('Acme', None)[1] == 'acme.fr'
+
+
+@pytest.mark.parametrize('domain,head,expected', [
+    ('datadoghq.com', '<meta property="og:site_name" content="Datadog"><title>Cloud Monitoring as a Service | Datadog</title>', 'Datadog'),
+    ('klarna.com', '<meta property="og:site_name" content="Klarna FR"><title>Payez plus tard</title>', 'Klarna'),
+    ('snowflake.com', '<title>Snowflake AI Data Cloud</title>', 'Snowflake'),
+    ('crowdstrike.com', '<title>CrowdStrike.com: Stop breaches</title>', 'CrowdStrike'),
+    ('bbc.co.uk', '<title>BBC - Home</title>', 'BBC'),
+    ('linkedin.com', '<title>Checking your browser</title>', None),
+])
+def test_only_a_name_that_matches_the_domain_is_read_from_the_home_page(domain, head, expected):
+    from foothold.text import parse
+    assert sources.site_name(domain, parse(f'<html><head>{head}</head><body></body></html>', f'https://{domain}/')) == expected
 
 
 def test_collect_turns_failures_into_gaps(monkeypatch):

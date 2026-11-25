@@ -82,7 +82,7 @@ def load_offer(path):
 
 
 def build_prompt(offer, name, domain, evidence, gaps):
-    budget = int(os.environ.get('FOOTHOLD_MAX_CHARS', 70000))
+    budget = int(os.environ.get('FOOTHOLD_MAX_CHARS', '70000'))
     blocks, used = [], 0
     for e in evidence:
         body = clip(e.text, PER_SOURCE)
@@ -121,6 +121,7 @@ the product beyond the offer above, no claim about the account beyond the eviden
 
 
 MIN_QUOTE_WORDS = 4  # shorter than this, a quote such as "privacy policy" proves nothing
+BUILT_HERE = ('registry', 'stack', 'filing', 'apollo')  # short lines written by this code from structured data, not web pages
 
 
 def _plain(value):
@@ -132,13 +133,14 @@ def _find(evidence, ref, quote):
     """The evidence a fact cites, if its quote is really there."""
     source = evidence.get(str(ref or '').strip())
     passage = norm(str(quote or '')).strip(' ."\'')
-    if source and len(passage.split()) >= MIN_QUOTE_WORDS and passage in norm(f'{source.title}\n{source.text}'):
+    if source and len(passage.split()) >= (2 if source.kind in BUILT_HERE else MIN_QUOTE_WORDS) and passage in norm(f'{source.title}\n{source.text}'):
         return source
     return None
 
 
 def _fact(raw, evidence):
-    if not isinstance(raw, dict) or not raw.get('text'):
+    # No text or no source cited: the model says it does not know, which is not a failed check
+    if not isinstance(raw, dict) or not raw.get('text') or str(raw.get('evidence') or 'null').lower() in ('null', 'none'):
         return None, False
     source = _find(evidence, raw.get('evidence'), raw.get('quote'))
     if not source:

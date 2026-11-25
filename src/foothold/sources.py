@@ -10,7 +10,7 @@ import os
 import re
 from collections import Counter
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from email.utils import parsedate_to_datetime
 from urllib.parse import parse_qs, quote, urlencode, urlsplit
 
@@ -66,7 +66,7 @@ SECTIONS = ('about', 'pricing', 'customers', 'careers', 'press', 'security', 'bl
 SECTION_WORDS = {'about': 'about|about-us|company', 'pricing': 'pricing|plans', 'customers': 'customers|case-studies',
                  'careers': 'careers|jobs|join-us', 'press': 'press|newsroom|news|media',
                  'security': 'security|trust|compliance', 'blog': 'blog'}
-SECTION_RE = {name: re.compile(rf'/(?:{words})/?$', re.I) for name, words in SECTION_WORDS.items()}
+SECTION_RE = {name: re.compile(rf'/(?:{words})/?$', re.IGNORECASE) for name, words in SECTION_WORDS.items()}
 
 # Third-party tools that leave a recognisable trace in the HTML or the response headers
 TECH = {
@@ -91,10 +91,10 @@ TECH = {
 
 ATS = {
     'greenhouse': re.compile(r'(?:boards|job-boards)(?:\.eu)?\.greenhouse\.io/(?:embed/job_board\?for=)?([\w-]+)'
-                             r'|boards-api\.greenhouse\.io/v1/boards/([\w-]+)', re.A),
-    'lever': re.compile(r'jobs\.(?:eu\.)?lever\.co/([\w-]+)', re.A),
-    'ashby': re.compile(r'jobs\.ashbyhq\.com/([\w.-]+)', re.A),
-    'workday': re.compile(r'([\w-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([\w-]+)', re.A),
+                             r'|boards-api\.greenhouse\.io/v1/boards/([\w-]+)', re.ASCII),
+    'lever': re.compile(r'jobs\.(?:eu\.)?lever\.co/([\w-]+)', re.ASCII),
+    'ashby': re.compile(r'jobs\.ashbyhq\.com/([\w.-]+)', re.ASCII),
+    'workday': re.compile(r'([\w-]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([\w-]+)', re.ASCII),
 }
 
 
@@ -152,17 +152,27 @@ def crawl_site(domain, gaps):
         if body:
             # No date: the publication date in a page's meta tags is rarely kept up to date
             evidence.append(_ev('site', page.url, d.title or f'{domain} {name}', clip(body, 6000)))
-    pieces = [p.strip() for p in re.split(r'\s[|–—:·-]\s|: ', doc.title) if p.strip()]
+    return evidence, pages, site_name(domain, doc)
+
+
+def site_name(domain, doc):
+    """The company name as its own home page writes it, or None. Only a name that matches the domain is trusted:
+    a page title can be a slogan, a country edition ("Klarna FR") or a bot challenge."""
     label = domain.split('.')[0]
-    named = doc.meta.get('og:site_name') or next((p for p in pieces if name_key(p).replace(' ', '') == label), None)
-    return evidence, pages, named or (pieces[0] if pieces and len(pieces[0]) < 40 else None)
+    names = [n for n in (doc.meta.get('og:site_name'), *re.split(r'\s[|–—:·-]\s|: ', doc.title)) if n and n.strip()]
+    keys = [(n.strip(), name_key(n).replace(' ', '')) for n in names]
+    for test in (lambda k: k == label, lambda k: len(k) > 3 and label.startswith(k)):  # "Datadog" for datadoghq
+        if hit := next((n for n, k in keys if test(k)), None):
+            return hit
+    word = next((w for n in names for w in re.findall(r"[^\W_]+", n) if w.lower() == label), None)
+    return word and (word if word != word.lower() else word.capitalize())
 
 
 def stack(domain, pages):
     # Headers get a marker no page text can contain, so a page cannot fake one
     hay = '\n'.join('\n'.join(f'\x00header {k}: {v}' for k, v in page.headers.items()) + '\n' + page.text.replace('\x00', '')
                     for _, page, _ in pages).lower()
-    found = [name for name, pattern in TECH.items() if re.search(pattern, hay, re.M)]
+    found = [name for name, pattern in TECH.items() if re.search(pattern, hay, re.MULTILINE)]
     if not found:
         return None
     return _ev('stack', pages[0][1].url, f'Technologies visible on {domain}',
@@ -186,7 +196,7 @@ def _lever(slug):
     data = fetch.get_json(f'https://api.lever.co/v0/postings/{slug}?mode=json', max_bytes=30_000_000)
     jobs = [{'title': j.get('text', ''), 'dept': (j.get('categories') or {}).get('team'),
              'location': (j.get('categories') or {}).get('location'),
-             'date': datetime.fromtimestamp(j['createdAt'] / 1000, timezone.utc).date().isoformat() if j.get('createdAt') else None,
+             'date': datetime.fromtimestamp(j['createdAt'] / 1000, UTC).date().isoformat() if j.get('createdAt') else None,
              'url': j.get('hostedUrl', ''),
              'text': '\n'.join([j.get('descriptionPlain') or ''] + [to_text(x.get('content', '')) for x in j.get('lists', [])])}
             for j in data if isinstance(j, dict)]
@@ -289,10 +299,10 @@ def _feed_items(xml):
     """Title, link, date and summary of each RSS or Atom entry, read with patterns rather than an XML parser
     (feeds are untrusted and often malformed)."""
     def field(block, tag):
-        m = re.search(rf'<{tag}\b[^>]*>(.*?)</{tag}>', block, re.S | re.I)
+        m = re.search(rf'<{tag}\b[^>]*>(.*?)</{tag}>', block, re.DOTALL | re.IGNORECASE)
         value = re.sub(r'^<!\[CDATA\[|\]\]>$', '', m[1].strip()) if m else ''
         return html.unescape(value)
-    for block in re.findall(r'<(?:item|entry)\b.*?</(?:item|entry)>', xml[:500_000], re.S | re.I)[:40]:
+    for block in re.findall(r'<(?:item|entry)\b.*?</(?:item|entry)>', xml[:500_000], re.DOTALL | re.IGNORECASE)[:40]:
         href = re.search(r'<link\b[^>]*href="([^"]+)"', block)
         link = field(block, 'link') or (href[1] if href else '')
         when = field(block, 'pubDate') or field(block, 'published') or field(block, 'updated')
@@ -360,12 +370,18 @@ def _claims(entity, prop):
     return [(value, quals) for _, value, quals in sorted(out, key=lambda c: not c[0])]
 
 
+def _label(entity):
+    names = entity.get('labels', {})  # Wikidata keeps a name shared by all languages under "mul"
+    return (names.get('en') or names.get('mul') or {}).get('value')
+
+
 def _when(qualifiers):
     snaks = qualifiers.get('P585', [])
     return iso_date(snaks[0]['datavalue']['value']['time'].replace('-00', '-01')) if snaks and 'datavalue' in snaks[0] else None
 
 
-BUSINESS_PROPS = ('P452', 'P1128', 'P414', 'P169', 'P2139', 'P1454')  # industry, staff, exchange, CEO, revenue, legal form
+# industry, staff, exchange, CEO, revenue, legal form, founder, parent, owner
+BUSINESS_PROPS = ('P452', 'P1128', 'P414', 'P169', 'P2139', 'P1454', 'P112', 'P749', 'P127')
 
 
 def wikidata(name, domain):
@@ -376,13 +392,14 @@ def wikidata(name, domain):
     if not hits:
         return None
     entities = fetch.get_json(WIKIDATA + urlencode({'action': 'wbgetentities', 'ids': '|'.join(h['id'] for h in hits),
-                                                     'props': 'claims|labels|descriptions', 'languages': 'en'}))['entities']
-    for hit in hits:
+                                                     'props': 'claims|labels|descriptions', 'languages': 'en|mul'}))['entities']
+    # The entry named exactly like the request before "Acme GmbH", a subsidiary that name_key also accepts
+    for hit in sorted(hits, key=lambda h: (h.get('label') or '').lower() != name.lower()):
         entity = entities.get(hit['id'], {})
         hosts = [(urlsplit(str(v)).hostname or '').removeprefix('www.') for v, _ in _claims(entity, 'P856')]
         if not hosts or (domain and not any(same_site(h, domain) or same_site(domain, h) for h in hosts)):
             continue
-        label = entity.get('labels', {}).get('en', {}).get('value', '')
+        label = _label(entity) or hit.get('label') or ''
         # Resolving a bare name: the entry must carry that name and look like a company, or we do not guess
         if not domain and (name_key(label) != name_key(name) or not any(_claims(entity, p) for p in BUSINESS_PROPS)):
             continue
@@ -392,8 +409,8 @@ def wikidata(name, domain):
         labels = {}
         if ids:
             got = fetch.get_json(WIKIDATA + urlencode({'action': 'wbgetentities', 'ids': '|'.join(ids),
-                                                       'props': 'labels', 'languages': 'en'}))['entities']
-            labels = {i: e.get('labels', {}).get('en', {}).get('value', i) for i, e in got.items()}
+                                                       'props': 'labels', 'languages': 'en|mul'}))['entities']
+            labels = {i: _label(e) or i for i, e in got.items()}
         label = label or name
         lines = [f'{label}: {entity.get("descriptions", {}).get("en", {}).get("value", "no description")}.',
                  f'Official website: {hosts[0]}.']
@@ -435,8 +452,8 @@ def edgar(name, ticker, window, contact):
     rows = list(zip(recent.get('form', []), recent.get('filingDate', []), recent.get('accessionNumber', []),
                     recent.get('primaryDocument', []), recent.get('items', [])))
     annual = next((r for r in rows if r[0] in ('10-K', '20-F', '40-F')), None)
-    lines = [f'{sub.get("name", match["title"])} is registered with the US Securities and Exchange Commission '
-             f'(CIK {cik}, ticker {match["ticker"]}).',
+    lines = [(f'{sub.get("name", match["title"])} is registered with the US Securities and Exchange Commission '
+              f'(CIK {cik}, ticker {match["ticker"]}).'),
              f'SIC industry code: {sub.get("sic", "?")} {sub.get("sicDescription", "")}.']
     if annual:
         lines.append(f'Latest annual report: form {annual[0]} filed {annual[1]}.')
@@ -537,12 +554,14 @@ def collect(account, offer, log=lambda message: None):
         evidence += site[0]
         pages = site[1]
         name = name or site[2]
-    name = name or domain.split('.')[0].capitalize()
-    registry = registry or attempt('Wikidata', wikidata, name, domain)
+    label = domain.split('.')[0]
+    registry = registry or attempt('Wikidata', wikidata, name or label, domain)
     if registry:
         evidence.append(registry[0])
+        name = name or registry[0].title.removeprefix('Wikidata: ')
     else:
         gaps.append('Wikidata: no entry whose official website is this domain')
+    name = name or label.capitalize()
     if pages and (found := stack(domain, pages)):
         evidence.append(found)
     evidence += attempt('Job board', jobs, name, domain, pages, offer, gaps) or []
@@ -555,12 +574,11 @@ def collect(account, offer, log=lambda message: None):
             gaps.append('SEC EDGAR: no US-listed company with this name or ticker')
     else:
         gaps.append('SEC EDGAR: skipped, set FOOTHOLD_CONTACT (the SEC asks for a contact address)')
-    if (account.get('country') or '').upper() == 'FR' or domain.endswith('.fr'):
-        if found := attempt('French company register', france, name):
-            evidence.append(found)
-    if key := os.environ.get('APOLLO_API_KEY'):
-        if found := attempt('Apollo', apollo, domain, key):
-            evidence.append(found)
+    if ((account.get('country') or '').upper() == 'FR' or domain.endswith('.fr')) and (
+            found := attempt('French company register', france, name)):
+        evidence.append(found)
+    if (key := os.environ.get('APOLLO_API_KEY')) and (found := attempt('Apollo', apollo, domain, key)):
+        evidence.append(found)
     for number, item in enumerate(evidence, 1):
         item.id = f'E{number}'
     return name, domain, evidence, gaps

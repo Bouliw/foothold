@@ -37,8 +37,8 @@ def to_markdown(brief):
            f'{_md(a["domain"])} · researched {brief["researched"]} · offer: {_md(brief["offer"])} · model: {_md(brief["model"])}', '',
            f'## Fit: {fit["score"]}/100', '']
     if fit['unknown']:
-        out += [f'{fit["unknown"]} of {len(fit["criteria"])} criteria could not be checked from public sources; '
-                f'they count as not met.', '']
+        out += [(f'{fit["unknown"]} of {len(fit["criteria"])} criteria could not be checked from public sources; '
+                 f'they count as not met.'), '']
     out += ['| Criterion | Weight | Verdict | Why | Source |', '|---|---|---|---|---|']
     for c in fit['criteria']:
         source = _link(c['source'], c['url']) if c.get('url') else ''

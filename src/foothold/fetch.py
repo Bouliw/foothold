@@ -5,12 +5,12 @@ import http.client
 import ipaddress
 import json
 import os
+import re
 import socket
 import ssl
 import threading
 import time
 import urllib.error
-import re
 import urllib.request
 import zlib
 from dataclasses import asdict, dataclass
@@ -64,7 +64,7 @@ def is_public_ip(ip):
 _NAT64 = ipaddress.ip_network('64:ff9b::/96')
 
 
-def _connect(address, timeout=socket.getdefaulttimeout(), source_address=None, **_):
+def _connect(address, timeout=None, source_address=None, **_):
     """Resolves the host, refuses it unless every address is public, then connects to the address that was
     checked (so a second DNS answer cannot point somewhere else)."""
     host, port = address
@@ -235,10 +235,12 @@ def allowed(url):
         try:
             _, status, _, body = _follow(origin + '/robots.txt', {}, None, 500_000, 0.5, False)
         except FetchError as e:
-            if e.status == 0:  # refused before any request: say so rather than blame robots.txt
+            if not e.status:  # no answer at all (unknown host, refused address): say so, do not blame robots.txt
                 raise
             status, body = 599, b''
-        if status == 200:
+        if status == 200 and body.lstrip()[:1] == b'<':  # a bot challenge in place of the file: we are not welcome
+            rules = Robots(disallow_all=True)
+        elif status == 200:
             rules = Robots(body[:500_000].decode('utf-8', 'replace'))
         else:
             rules = Robots(allow_all=400 <= status < 500 and status != 429, disallow_all=True)

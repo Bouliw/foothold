@@ -17,6 +17,10 @@ class LLMError(Exception):
     pass
 
 
+class BadAnswer(LLMError):
+    pass
+
+
 def settings():
     env = os.environ
     # An address given without a provider is an OpenAI-compatible server: an Anthropic key is never sent to it
@@ -57,7 +61,7 @@ def _openai_compatible(system, prompt, cfg, key):
         text = out['choices'][0]['message']['content'] or ''
     except (KeyError, IndexError, TypeError):
         raise LLMError(f'unexpected answer from {base}: {str(out)[:200]}')
-    return re.sub(r'<think>.*?</think>', '', text, flags=re.S).strip()  # reasoning models think out loud first
+    return re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()  # reasoning models think out loud first
 
 
 def _anthropic(system, prompt, cfg):
@@ -104,8 +108,16 @@ def extract_json(text):
     """The JSON object in an answer, even wrapped in a code fence or a sentence."""
     start, end = text.find('{'), text.rfind('}')
     if start < 0 or end < start:
-        raise LLMError('no JSON object in the model answer')
+        raise BadAnswer('no JSON object in the model answer')
     try:
         return json.loads(text[start:end + 1])
     except ValueError as e:
-        raise LLMError(f'the model answer is not valid JSON: {e}')
+        raise BadAnswer(f'the model answer is not valid JSON: {e}')
+
+
+def ask_json(system, prompt, cfg):
+    """The model's answer as a JSON object. A small model sometimes breaks its JSON: it gets one second try."""
+    try:
+        return extract_json(ask(system, prompt, cfg))
+    except BadAnswer:
+        return extract_json(ask(system, prompt, cfg))

@@ -6,6 +6,7 @@ import urllib.error
 import urllib.request
 from datetime import date, timedelta
 from http.server import ThreadingHTTPServer
+from pathlib import Path
 
 import pytest
 
@@ -146,7 +147,7 @@ def test_csv_cells_cannot_be_formulas():
     rows = list(csv.reader(io.StringIO(render.to_csv([brief], 'salesforce'))))
     assert rows[0][:3] == ['Account Name', 'Website', 'Description'] and len(rows) == 2
     assert rows[1][0].startswith("'=") and "'+1 for your launch" in rows[1]
-    assert list(csv.reader(io.StringIO(render.to_csv([brief]))))[0][1] == 'Company Domain Name'
+    assert next(csv.reader(io.StringIO(render.to_csv([brief]))))[1] == 'Company Domain Name'
 
 
 def test_markdown_links_cannot_break_out():
@@ -155,6 +156,26 @@ def test_markdown_links_cannot_break_out():
     brief['account']['domain'] = '<b>x</b>'
     md = render.to_markdown(brief)
     assert '<img' not in md and '<b>' not in md and '%0A%0A%3Cimg' in md
+
+
+def test_short_quotes_pass_only_on_sources_built_from_structured_data():
+    items = [Evidence('registry', 'https://w.example/Q1', 'Wikidata: X', 'X: American e-commerce company.', None, TODAY, 'E1'),
+             Evidence('site', 'https://x.example/', 'X', 'X is an American e-commerce company.', None, TODAY, 'E2')]
+    answer = {'company': {'summary': {'text': 'Sells online.', 'evidence': 'E1', 'quote': 'American e-commerce company.'},
+                          'markets': {'text': 'Sells online.', 'evidence': 'E2', 'quote': 'American e-commerce company.'},
+                          'size': {'text': 'unknown', 'evidence': None, 'quote': 'unknown'}}}
+    gaps = []
+    brief = analyze.validate(answer, OFFER, items, gaps)
+    assert brief['company']['summary'] and not brief['company']['markets'] and not brief['company']['size']
+    assert any(g.startswith('1 statement') for g in gaps)  # the page quote, not the honest "unknown"
+
+
+def test_broken_json_gets_one_second_try(monkeypatch):
+    answers = ['{"criteria": [', '{"criteria": []}', '{"criteria": [', 'still not json']
+    monkeypatch.setattr(llm, 'ask', lambda *a: answers.pop(0))
+    assert llm.ask_json('s', 'p', {}) == {'criteria': []}
+    with pytest.raises(llm.LLMError):
+        llm.ask_json('s', 'p', {})
 
 
 def test_provider_choice(monkeypatch):
@@ -172,7 +193,7 @@ def test_env_file_cannot_redirect_a_key_from_the_environment(tmp_path, monkeypat
         monkeypatch.delenv(name, raising=False)
     monkeypatch.setenv('OPENAI_API_KEY', 'from-my-shell')
     offer = (tmp_path / 'offer.toml')
-    offer.write_text(open('examples/offer.toml').read())
+    offer.write_text(Path('examples/offer.toml').read_text())
     (tmp_path / '.env').write_text('# shared kit\nexport FOOTHOLD_PROVIDER=openai\nFOOTHOLD_BASE_URL="https://collector.example/v1"\n')
     monkeypatch.chdir(tmp_path)
     assert cli.load_env() == {'FOOTHOLD_PROVIDER', 'FOOTHOLD_BASE_URL'}

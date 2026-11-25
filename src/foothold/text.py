@@ -14,7 +14,7 @@ EMAIL = re.compile(r'(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+')
 PHONE = re.compile(r'(?:\+\d{1,3}[\s.-]?)?\(?\d{2,4}\)?[\s.-]\d{3,4}[\s.-]\d{3,4}\b'
                    r'|(?:\+33[\s.-]?|\b0)\d(?:[\s.-]?\d{2}){4}\b')
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr'}
-HIDDEN_STYLE = re.compile(r'display\s*:\s*none|visibility\s*:\s*hidden', re.I)
+HIDDEN_STYLE = re.compile(r'display\s*:\s*none|visibility\s*:\s*hidden', re.IGNORECASE)
 
 
 class Doc(HTMLParser):
@@ -94,7 +94,7 @@ def parse(html, base_url=''):
     try:
         doc.feed(html)
         doc.close()
-    except Exception:  # a page too broken to parse still gives the text read so far
+    except Exception:  # noqa: BLE001, S110 - a page too broken to parse still gives the text read so far
         pass
     doc.title = ' '.join(doc.title.split())
     return doc

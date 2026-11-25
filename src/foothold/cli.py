@@ -12,7 +12,6 @@ from urllib.parse import urlsplit
 
 from . import __version__, analyze, fetch, llm, render, sources
 
-
 COLUMNS = {'company': 'name', 'company name': 'name', 'account': 'name', 'account name': 'name',
            'website': 'domain', 'url': 'domain', 'company domain name': 'domain'}
 
@@ -20,7 +19,7 @@ COLUMNS = {'company': 'name', 'company name': 'name', 'account': 'name', 'accoun
 def parse_company(value):
     """'Datadog', 'datadoghq.com' or 'https://www.datadoghq.com/about' as an account."""
     value = value.strip()
-    if re.fullmatch(r'(https?://)?[\w.-]+\.[a-z]{2,}(/\S*)?', value, re.I):
+    if re.fullmatch(r'(https?://)?[\w.-]+\.[a-z]{2,}(/\S*)?', value, re.IGNORECASE):
         host = urlsplit(value if '//' in value else '//' + value).hostname or ''
         return {'domain': host.lower().removeprefix('www.')}
     return {'name': value}
@@ -53,7 +52,7 @@ def research(account, offer, cfg, log=lambda message: None):
     log(f'Analysis ({len(evidence)} sources)')
     cfg = dict(cfg)
     prompt = analyze.build_prompt(offer, name, domain, evidence, gaps)
-    raw = llm.extract_json(llm.ask(analyze.SYSTEM, prompt, cfg))
+    raw = llm.ask_json(analyze.SYSTEM, prompt, cfg)
     checked = analyze.validate(raw, offer, evidence, gaps)
     return {'account': {'name': name, 'domain': domain}, 'researched': date.today().isoformat(),
             'offer': offer['product']['name'], 'model': f'{cfg["provider"]}/{cfg["model"]}', **checked, 'gaps': gaps,
@@ -133,12 +132,12 @@ def main(argv=None):
     for account in accounts:
         label = account.get('name') or account.get('domain')
         try:
-            brief = research(account, offer, cfg, log=lambda m: print(f'  {label}: {m}', file=sys.stderr))
+            brief = research(account, offer, cfg, log=lambda m, label=label: print(f'  {label}: {m}', file=sys.stderr))
         except (sources.Unresolved, fetch.FetchError, llm.LLMError) as e:
             failed += 1
             print(f'{label}: failed, {e}', file=sys.stderr)
             continue
-        except Exception as e:  # one account never stops the others
+        except Exception as e:  # noqa: BLE001 - one account never stops the others
             failed += 1
             print(f'{label}: failed, unexpected {type(e).__name__}: {e}', file=sys.stderr)
             continue
