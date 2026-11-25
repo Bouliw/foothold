@@ -154,18 +154,20 @@ through, which is why every verdict shows its quote.
 
 [`examples/briefs`](examples/briefs) holds the output of
 `foothold batch examples/accounts.csv --offer examples/offer.toml` for a fictional
-access-security vendor against three public companies, run on 2026-11-24 with a
-26B-parameter model on a laptop, without the optional keys:
+access-security vendor against three public companies, run on 2026-11-25 with a
+26B-parameter open model (Gemma) on a laptop, without the optional keys:
 
-| Account | Fit | Brief |
-|---|---|---|
-| Datadog | 100/100 | [datadoghq-com.md](examples/briefs/datadoghq-com.md) |
-| Adyen | 50/100 | [adyen-com.md](examples/briefs/adyen-com.md) |
-| Shopify | 30/100 | [shopify-com.md](examples/briefs/shopify-com.md) |
+| Account | Fit | Signals | Brief |
+|---|---|---|---|
+| Datadog | 100/100 | 6 | [datadoghq-com.md](examples/briefs/datadoghq-com.md) |
+| Adyen | 50/100 | 7 | [adyen-com.md](examples/briefs/adyen-com.md) |
+| Shopify | 50/100 | 3 | [shopify-com.md](examples/briefs/shopify-com.md) |
 
-The low scores are the tool working as intended. Shopify has no public board on the
-four supported job platforms and its site does not say where it runs, so three criteria
-stay `unknown` and the gaps say so.
+The middling scores are the tool working as intended. Nothing public says which cloud
+Adyen or Shopify run on, no source gives Adyen's headcount, and the model quoted no
+passage that places Shopify under a regulation, so those criteria stay `unknown` and
+count as not met. A local model also varies from one run to the next: the Gaps section
+of each brief says how many of its statements failed the quote check.
 
 ## Limits
 
