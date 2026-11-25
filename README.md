@@ -113,15 +113,15 @@ appears as published, with its link, in the list of sources.
 
 ```mermaid
 flowchart TD
-    A[Company name or domain] --> B[Collect public sources]
-    B --> C[Numbered evidence: URL, dates, text without emails or phone numbers]
-    O[offer.toml: product, weighted criteria] --> D
-    C --> D[Model writes each statement with an evidence number and a verbatim quote]
-    D --> E{Quote found in that evidence?}
-    E -- no --> G[Statement deleted and counted under Gaps]
-    E -- yes --> F[Code computes the fit score, the dates and the signal window]
-    F --> H[Brief: Markdown, JSON, CRM CSV]
-    G --> H
+    input["Company name or domain"] --> collect["Collect public sources"]
+    collect --> evidence["Numbered evidence with URL, dates and text, emails and phone numbers removed"]
+    offer["offer.toml with your product and weighted criteria"] --> model
+    evidence --> model["Model writes each statement with an evidence number and a verbatim quote"]
+    model --> check{"Quote found in that evidence?"}
+    check -- no --> dropped["Statement deleted and counted under Gaps"]
+    check -- yes --> score["Code computes the fit score, the dates and the signal window"]
+    score --> brief["Brief in Markdown, JSON and CRM CSV"]
+    dropped --> brief
 ```
 
 Collection and checking are plain code; the model only reads the evidence and proposes
