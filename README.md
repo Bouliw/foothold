@@ -44,7 +44,8 @@ foothold batch accounts.csv              # a list: CSV with a name or domain col
 foothold serve                           # a local web page at http://127.0.0.1:8765
 ```
 
-Each account gets `briefs/<domain>.md` and `briefs/<domain>.json`, and each run writes
+Each account gets a Markdown and a JSON file named after its domain
+(`briefs/datadoghq-com.md`, `briefs/datadoghq-com.json`), and each `research` or `batch` run writes
 `briefs/accounts-hubspot.csv`, ready for a company import (`--crm salesforce` switches
 the column names to Account Name / Website). The other columns (fit score, top signal,
 openers, gaps) map to custom properties you create once in the CRM.
@@ -76,19 +77,20 @@ machine except the requests to the public sources below.
 ## Sources
 
 Free public sources by default. Company pages are fetched only if the site's
-`robots.txt` allows it, at the pace it asks for, and cached for 24 hours. Documented
+`robots.txt` allows it, at the pace it asks for (capped at 10 seconds between requests),
+and every answer is cached for 24 hours. Documented
 public APIs are called under their own terms.
 
 | Source | What it gives | Needs |
 |---|---|---|
-| Company website (home, about, pricing, customers, careers, press, security) | Activity, markets, business model | |
+| Company website (home, about, pricing, customers, careers, press, security, blog) | Activity, markets, business model | |
 | Front-end technologies in the page HTML and headers | Visible stack (marketing and web tools, not the internal one) | |
 | Greenhouse, Lever, Ashby job board APIs; Workday career sites | Open roles with posting dates, postings matching your keywords | |
 | Site news feed, GDELT, then Bing News RSS as a fallback | Dated headlines naming the company | |
-| Wikidata | Official website, country, founding year, headcount | |
+| Wikidata | Official website, industry, country, founding year, headcount, stock listing | |
 | SEC EDGAR | Revenue, dated 8-K events by item (results, acquisitions, officer changes) | `FOOTHOLD_CONTACT`, the contact address the SEC asks for |
 | recherche-entreprises.api.gouv.fr | French register: creation date, activity code, size band | |
-| Apollo | Company fields only (industry, headcount, funding stage) | `APOLLO_API_KEY` |
+| Apollo | Company fields only (industry, headcount, revenue, funding) | `APOLLO_API_KEY` |
 | Bright Data Web Unlocker | Second try for a company page that answers 403 | `BRIGHTDATA_API_KEY`, `BRIGHTDATA_ZONE` |
 
 The Bright Data option is off unless you set both variables. It gets past bot protection
@@ -99,12 +101,32 @@ Whether that suits a given site's terms is your call.
 
 foothold researches companies, not people. It suggests job titles to approach and never
 looks anyone up. It does not collect or guess email addresses or phone numbers, and
-strips any that appear in a page before the text is stored or sent to the model. A
-change of executive is reported by role. Directors listed in public registers are
-ignored, and the Apollo integration reads company fields only.
+strips any that appear in a page before the text is stored or sent to the model. The
+model is told to report a change of executive by role, not by name. Directors listed in
+public registers are ignored, sole traders (registered under a person's name) are
+skipped, and the Apollo integration reads company fields only.
 
 One thing it does not do: rewrite news headlines. A headline that names a public figure
 appears as published, with its link, in the list of sources.
+
+## How it works
+
+```mermaid
+flowchart TD
+    A[Company name or domain] --> B[Collect public sources]
+    B --> C[Numbered evidence: URL, dates, text without emails or phone numbers]
+    O[offer.toml: product, weighted criteria] --> D
+    C --> D[Model writes each statement with an evidence number and a verbatim quote]
+    D --> E{Quote found in that evidence?}
+    E -- no --> G[Statement deleted and counted under Gaps]
+    E -- yes --> F[Code computes the fit score, the dates and the signal window]
+    F --> H[Brief: Markdown, JSON, CRM CSV]
+    G --> H
+```
+
+Collection and checking are plain code; the model only reads the evidence and proposes
+statements. A broken model answer gets one second try, then the account is reported as
+failed and the batch moves on.
 
 ## How a brief is checked
 
@@ -120,8 +142,8 @@ The model never gets the last word on a fact.
    stack) gives an undated signal, shown as such.
 6. An opener is kept only if it rests on a signal that survived these checks.
 
-Web pages are untrusted input. Text a visitor cannot see is dropped before the model
-reads the page, a page cannot open or close an evidence block, a verdict without a
+Web pages are untrusted input. Text hidden with HTML attributes or inline styles is
+dropped before the model reads the page, a page cannot open or close an evidence block, a verdict without a
 matching quote is discarded, and links are removed from everything the model writes
 freely (openers, reasons, objections). What the checks cannot do is judge meaning: the
 quote proves the passage is in the source, not that it supports the verdict. A page that
@@ -164,8 +186,9 @@ stay `unknown` and the gaps say so.
 ## Development
 
 ```sh
-pip install -e ".[test]"
+pip install -e ".[test]" ruff
 pytest
+ruff check .
 ```
 
 The tests run without network access.
