@@ -23,8 +23,8 @@ from that block). A program checks each quote against the block and deletes fact
 Never join two passages into one quote.
 3. When the evidence does not say, answer null for a fact and "unknown" for a verdict. A missing answer is \
 useful to the rep; a guess is not.
-4. No personal data: no names of people, no email addresses, no phone numbers. Refer to people by role only \
-("a new Chief Information Security Officer").
+4. No personal data: no names of people, no email addresses, no phone numbers. Refer to people by role only, \
+even when a headline names them: write "the co-founder and CEO is retiring", never "Jane Doe is retiring".
 5. Answer with one JSON object and nothing else."""
 
 SCHEMA = """{

@@ -3,36 +3,36 @@
     "name": "Datadog",
     "domain": "datadoghq.com"
   },
-  "researched": "2026-11-24",
+  "researched": "2026-11-25",
   "offer": "Acme Access",
   "model": "local/gemma-4-26b-a4b-it-qat-mlx",
   "company": {
     "summary": {
-      "text": "Datadog provides an integrated platform for monitoring and security, offering observability across infrastructure, applications, and data.",
+      "text": "Datadog provides an integrated platform for monitoring and security, offering observability across infrastructure, applications, data, logs, and cloud environments.",
       "quote": "The integrated platform for monitoring & security",
       "source": "E1",
       "url": "https://www.datadoghq.com/",
       "source_title": "Cloud Monitoring as a Service | Datadog",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     "size": {
-      "text": "8,100+ employees as of 2026-11-24.",
+      "text": "8,100+ employees as of 2026-11-25.",
       "quote": "Our 8,100+ employees help organizations across the globe enable digital transformation",
       "source": "E4",
       "url": "https://careers.datadoghq.com/",
       "source_title": "Join Our Pack | Datadog Careers",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     "markets": {
-      "text": "Global organizations across various industries, including federal and enterprise sectors.",
-      "quote": "help agencies connect mission priorities, modernization programs, and operational risks to technical solutions.",
-      "source": "E13",
-      "url": "https://careers.datadoghq.com/detail/8144628/?gh_jid=8144628",
-      "source_title": "Job posting: Senior Sales Engineer - FED (District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote)",
-      "published": "2026-08-21",
-      "collected": "2026-11-24"
+      "text": "Global presence serving organizations across the globe.",
+      "quote": "help organizations across the globe enable digital transformation",
+      "source": "E4",
+      "url": "https://careers.datadoghq.com/",
+      "source_title": "Join Our Pack | Datadog Careers",
+      "published": null,
+      "collected": "2026-11-25"
     },
     "business_model": null
   },
@@ -44,8 +44,8 @@
         "name": "Runs production workloads on at least one major public cloud",
         "weight": 3,
         "verdict": "yes",
-        "why": "Datadog's own platform utilizes cloud-native infrastructure and integrates with major public clouds.",
-        "quote": "View pricing\nObservability\nEnd-to-end, simplified visibility into your stack’s health & performance",
+        "why": "Datadog provides monitoring for cloud infrastructure and services.",
+        "quote": "Cloud Infrastructure Entitlement Management",
         "source": "E1",
         "url": "https://www.datadoghq.com/",
         "source_title": "Cloud Monitoring as a Service | Datadog"
@@ -54,8 +54,8 @@
         "name": "Has more than 1,000 employees",
         "weight": 2,
         "verdict": "yes",
-        "why": "The company reports having over 8,100 employees.",
-        "quote": "Our 8,100+ employees help organizations across the globe enable digital transformation",
+        "why": "The company has over 8,100 employees.",
+        "quote": "Our 8,100+ employees help organizations across the globe",
         "source": "E4",
         "url": "https://careers.datadoghq.com/",
         "source_title": "Join Our Pack | Datadog Careers"
@@ -64,8 +64,8 @@
         "name": "Is subject to security or financial regulation (PCI DSS, SOC 2, DORA, NIS2, SOX)",
         "weight": 2,
         "verdict": "yes",
-        "why": "The company manages compliance and audits for standards like SOC2 and PCI.",
-        "quote": "maintaining our compliance programs and related audits (e.g., SOC2, PCI, HIPAA, ISO)",
+        "why": "The company manages compliance and audit functions for regulatory standards like SOC2 and PCI.",
+        "quote": "ensuring that Datadog not only meets rigorous global regulatory standards",
         "source": "E12",
         "url": "https://careers.datadoghq.com/detail/8098939/?gh_jid=8098939",
         "source_title": "Job posting: Engineering Manager I, Commercial Audit (New York, New York, USA)"
@@ -74,8 +74,8 @@
         "name": "Is hiring for cloud security, identity or platform engineering roles",
         "weight": 2,
         "verdict": "yes",
-        "why": "They have open roles for Cloud Security and Zero Trust Networking engineering.",
-        "quote": "Group Product Management, Cloud Security and Shared Capabilities (posted 2026-11-23)",
+        "why": "They are actively hiring for roles in Cloud Security and Zero Trust Networking.",
+        "quote": "Cloud Security and Shared Capabilities (posted 2026-11-23)",
         "source": "E9",
         "url": "https://boards.greenhouse.io/datadog",
         "source_title": "Datadog job board (Greenhouse)"
@@ -84,8 +84,8 @@
         "name": "Sells to enterprise customers who ask for security assurances",
         "weight": 1,
         "verdict": "yes",
-        "why": "They provide specialized security and compliance solutions for enterprise and federal customers.",
-        "quote": "help customers and account teams address security, compliance, acquisition, and deployment requirements",
+        "why": "They have dedicated sales engineering roles for enterprise and federal customers.",
+        "quote": "As a Senior Federal Enterprise Sales Engineer, you'll be a trusted technical advisor to federal customers",
         "source": "E13",
         "url": "https://careers.datadoghq.com/detail/8144628/?gh_jid=8144628",
         "source_title": "Job posting: Senior Sales Engineer - FED (District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote)"
@@ -94,100 +94,121 @@
   },
   "signals": [
     {
-      "type": "news",
-      "date": "2026-11-11",
-      "text": "Datadog reported a fourfold rise in serious vulnerabilities found in cloud workloads.",
-      "quote": "Datadog finds serious vulnerabilities in cloud workloads increase 4x in just nine months",
-      "source": "E16",
-      "url": "https://itwire.com/guest-articles/company-news/datadog-finds-serious-vulnerabilities-in-cloud-workloads-increase-4x-in-just-nine-months",
-      "source_title": "Datadog finds serious vulnerabilities in cloud workloads increase 4x in just nine months",
-      "published": "2026-11-11",
-      "collected": "2026-11-24"
+      "type": "financial",
+      "date": "2026-11-24",
+      "text": "Stock price volatility following earnings and AI demand warnings.",
+      "quote": "Datadog stock: Analysts cut targets after AI demand warning",
+      "source": "E15",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/datadog-stock-analysts-cut-targets-after-ai-demand-warning/70550158",
+      "source_title": "Datadog stock: Analysts cut targets after AI demand warning",
+      "published": "2026-11-24",
+      "collected": "2026-11-25"
     },
     {
-      "type": "financial",
-      "date": "2026-11-05",
-      "text": "Citigroup analysts cut the price target for Datadog stock to $290.00.",
-      "quote": "Datadog ( NASDAQ : DDOG ) Price Target Cut to $290 . 00 by Analysts at Citigroup",
+      "type": "hiring",
+      "date": "2026-11-23",
+      "text": "Hiring for Cloud Security and Shared Capabilities roles.",
+      "quote": "Group Product Management, Cloud Security and Shared Capabilities (posted 2026-11-23)",
+      "source": "E9",
+      "url": "https://boards.greenhouse.io/datadog",
+      "source_title": "Datadog job board (Greenhouse)",
+      "published": null,
+      "collected": "2026-11-25"
+    },
+    {
+      "type": "news",
+      "date": "2026-11-23",
+      "text": "Datadog named a Challenger in the 2026 Gartner Magic Quadrant for SIEM.",
+      "quote": "Datadog Named a Challenger in the 2026 Gartner® Magic Quadrant™ for Security Information and Event Management",
       "source": "E18",
-      "url": "https://www.dailypolitical.com/2026/11/05/datadog-nasdaqddog-price-target-cut-to-290-00-by-analysts-at-citigroup.html",
-      "source_title": "Datadog ( NASDAQ : DDOG ) Price Target Cut to $290 . 00 by Analysts at Citigroup",
-      "published": "2026-11-05",
-      "collected": "2026-11-24"
+      "url": "https://markets.businessinsider.com/news/stocks/datadog-named-a-challenger-in-the-2026-gartner-magic-quadrant-for-security-information-and-event-management-1036792855",
+      "source_title": "Datadog Named a Challenger in the 2026 Gartner® Magic Quadrant™ for Security Information and Event Management",
+      "published": "2026-11-23",
+      "collected": "2026-11-25"
     },
     {
       "type": "hiring",
       "date": "2026-11-03",
-      "text": "The company is hiring for Zero Trust Networking roles, which focuses on workload-identity and authorization.",
+      "text": "Hiring for Engineering Manager in Zero Trust Networking.",
       "quote": "Manager I, Engineering - Zero Trust Networking (New York, New York, USA)",
       "source": "E11",
       "url": "https://careers.datadoghq.com/detail/8350419/?gh_jid=8350419",
       "source_title": "Job posting: Manager I, Engineering - Zero Trust Networking (New York, New York, USA)",
       "published": "2026-11-03",
-      "collected": "2026-11-24"
-    },
-    {
-      "type": "news",
-      "date": "2026-10-23",
-      "text": "Datadog is reportedly eyeing a $4B acquisition of cloud defense firm Upwind.",
-      "quote": "Why Datadog Is Eyeing a $4B Buy of Cloud Defense Firm Upwind",
-      "source": "E19",
-      "url": "https://www.bankinfosecurity.com/blogs/datadog-eyeing-4b-buy-cloud-defense-firm-upwind-p-4225",
-      "source_title": "Why Datadog Is Eyeing a $4B Buy of Cloud Defense Firm Upwind",
-      "published": "2026-10-23",
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     {
       "type": "hiring",
       "date": "2026-07-31",
-      "text": "They are hiring for Commercial Audit roles to scale security and compliance posture through automation.",
+      "text": "Hiring for Engineering Manager in Commercial Audit to automate compliance.",
       "quote": "Engineering Manager I, Commercial Audit (New York, New York, USA)",
       "source": "E12",
       "url": "https://careers.datadoghq.com/detail/8098939/?gh_jid=8098939",
       "source_title": "Job posting: Engineering Manager I, Commercial Audit (New York, New York, USA)",
       "published": "2026-07-31",
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
+    },
+    {
+      "type": "stack",
+      "date": null,
+      "text": "Uses Amazon CloudFront and other cloud-based technologies.",
+      "quote": "Amazon CloudFront.",
+      "source": "E8",
+      "url": "https://www.datadoghq.com/",
+      "source_title": "Technologies visible on datadoghq.com",
+      "published": null,
+      "collected": "2026-11-25"
     }
   ],
   "roles": [
     {
       "title": "Chief Information Security Officer",
-      "why": "Responsible for overall security posture and managing organizational risk."
+      "why": "Responsible for overall security posture and risk management."
     },
     {
       "title": "Head of Cloud Security",
-      "why": "Oversees the security of cloud workloads and infrastructure."
+      "why": "Oversees cloud infrastructure security and entitlement management."
     },
     {
       "title": "Director of Platform Engineering",
-      "why": "Manages the infrastructure and platforms that support services."
+      "why": "Manages the infrastructure and platform that supports services."
     },
     {
       "title": "Identity and Access Management Lead",
-      "why": "Focuses on managing user access and identity-based authorization."
+      "why": "Focuses on managing user access and permissions across the platform."
     }
   ],
-  "hooks": {},
+  "hooks": {
+    "email": {
+      "body": "I noticed you are hiring for Cloud Security and Shared Capabilities roles. As you expand these capabilities, how are you managing right-sized access across your cloud environments to prevent over-privileged roles from becoming a breach risk?",
+      "signal": 2,
+      "subject": "Scaling Cloud Security capabilities"
+    },
+    "linkedin": {
+      "body": "I saw Datadog is expanding its Cloud Security team. How are you currently managing identity and access across your cloud stacks to ensure engineers don't retain standing admin rights?",
+      "signal": 2
+    },
+    "call": {
+      "body": "I noticed you're hiring for Cloud Security roles. How are your teams currently managing access reviews and preventing over-privileged roles across your cloud environments?",
+      "signal": 2
+    }
+  },
   "objections": [
     {
-      "objection": "We already have observability and security tools integrated.",
-      "response": "Acme Access specifically addresses the identity gap by right-sizing access across multi-cloud environments."
+      "objection": "We already have built-in security and observability tools.",
+      "response": "Our platform complements your existing stack by providing unified visibility into who can reach what across AWS, Azure, and Google Cloud."
     },
     {
-      "objection": "We manage access through our existing cloud provider's IAM.",
-      "response": "Acme Access provides a unified view across AWS, Azure, and Google Cloud to prevent fragmented visibility."
+      "objection": "We prefer to build our own internal security tooling.",
+      "response": "Acme Access automates the lifecycle of access, reducing the manual toil and spreadsheet-based reviews that often slow down engineering teams."
     },
     {
-      "objection": "We have automated our compliance and audit processes.",
-      "response": "Acme Access automates access reviews, reducing the manual toil often associated with audit spreadsheets."
+      "objection": "We are focused on AI-driven security right now.",
+      "response": "Acme Access provides the foundational identity and access management needed to ensure your AI-driven security tools have accurate, right-sized data."
     }
   ],
   "gaps": [
     "SEC EDGAR: skipped, set FOOTHOLD_CONTACT (the SEC asks for a contact address)",
-    "Email opener left out: it did not rest on a checked signal",
-    "Linkedin opener left out: it did not rest on a checked signal",
-    "Call opener left out: it did not rest on a checked signal",
-    "2 statements from the model left out: the quoted passage was not in the cited source",
     "Not found in the public sources checked: business model"
   ],
   "evidence": [
@@ -197,7 +218,7 @@
       "title": "Cloud Monitoring as a Service | Datadog",
       "url": "https://www.datadoghq.com/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E2",
@@ -205,7 +226,7 @@
       "title": "Pricing | Datadog",
       "url": "https://www.datadoghq.com/pricing/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E3",
@@ -213,7 +234,7 @@
       "title": "Customers | Datadog",
       "url": "https://www.datadoghq.com/customers/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E4",
@@ -221,7 +242,7 @@
       "title": "Join Our Pack | Datadog Careers",
       "url": "https://careers.datadoghq.com/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E5",
@@ -229,7 +250,7 @@
       "title": "Trust Hub | Datadog",
       "url": "https://www.datadoghq.com/trust/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E6",
@@ -237,7 +258,7 @@
       "title": "The Monitor | Datadog Official Blog",
       "url": "https://www.datadoghq.com/blog/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E7",
@@ -245,7 +266,7 @@
       "title": "Wikidata: Datadog",
       "url": "https://www.wikidata.org/wiki/Q16248637",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E8",
@@ -253,7 +274,7 @@
       "title": "Technologies visible on datadoghq.com",
       "url": "https://www.datadoghq.com/",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E9",
@@ -261,7 +282,7 @@
       "title": "Datadog job board (Greenhouse)",
       "url": "https://boards.greenhouse.io/datadog",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E10",
@@ -269,7 +290,7 @@
       "title": "Job posting: Group Product Management, Cloud Security and Shared Capabilities (Paris, France)",
       "url": "https://careers.datadoghq.com/detail/8405975/?gh_jid=8405975",
       "published": "2026-11-23",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E11",
@@ -277,7 +298,7 @@
       "title": "Job posting: Manager I, Engineering - Zero Trust Networking (New York, New York, USA)",
       "url": "https://careers.datadoghq.com/detail/8350419/?gh_jid=8350419",
       "published": "2026-11-03",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E12",
@@ -285,7 +306,7 @@
       "title": "Job posting: Engineering Manager I, Commercial Audit (New York, New York, USA)",
       "url": "https://careers.datadoghq.com/detail/8098939/?gh_jid=8098939",
       "published": "2026-07-31",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E13",
@@ -293,103 +314,95 @@
       "title": "Job posting: Senior Sales Engineer - FED (District of Columbia, USA, Remote; Maryland, USA, Remote; Virginia, USA, Remote)",
       "url": "https://careers.datadoghq.com/detail/8144628/?gh_jid=8144628",
       "published": "2026-08-21",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E14",
       "kind": "news",
-      "title": "Datadog named challenger in Gartner 2026 SIEM report",
-      "url": "https://channellife.com.au/story/datadog-named-challenger-in-gartner-s-2026-siem-report",
+      "title": "Datadog vs. Monday.com: Which Technology Stock Is a Better Buy for 2027?",
+      "url": "https://www.fool.com/coverage/better-buy/2026/11/24/datadog-vs-monday-com-which-technology-stock-is-a-better-buy-for-2027/",
       "published": "2026-11-24",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E15",
       "kind": "news",
-      "title": "Rocket taps Datadog COO as AI handles 65 % of servicing calls",
-      "url": "https://www.nationalmortgagenews.com/news/rocket-taps-datadog-coo-as-ai-handles-65-of-servicing-calls",
-      "published": "2026-11-13",
-      "fetched": "2026-11-24"
+      "title": "Datadog stock: Analysts cut targets after AI demand warning",
+      "url": "https://www.ad-hoc-news.de/boerse/news/corporate-news/datadog-stock-analysts-cut-targets-after-ai-demand-warning/70550158",
+      "published": "2026-11-24",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E16",
       "kind": "news",
-      "title": "Datadog finds serious vulnerabilities in cloud workloads increase 4x in just nine months",
-      "url": "https://itwire.com/guest-articles/company-news/datadog-finds-serious-vulnerabilities-in-cloud-workloads-increase-4x-in-just-nine-months",
-      "published": "2026-11-11",
-      "fetched": "2026-11-24"
+      "title": "Did The Market Read Datadog Stock Right?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/did-market-read-datadog-stock-195649587.html",
+      "published": "2026-11-23",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E17",
       "kind": "news",
-      "title": "Datadog flags fourfold rise in cloud vulnerabilities",
-      "url": "https://itbrief.co.nz/story/datadog-flags-fourfold-rise-in-cloud-vulnerabilities",
-      "published": "2026-11-11",
-      "fetched": "2026-11-24"
+      "title": "Okta, Datadog, JFrog, Bandwidth, and Rapid7 shares are soaring. What you need to know",
+      "url": "https://www.msn.com/en-us/money/general/okta-datadog-jfrog-bandwidth-and-rapid7-shares-are-soaring-what-you-need-to-know/ar-AA2i42qx",
+      "published": "2026-11-23",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E18",
       "kind": "news",
-      "title": "Datadog ( NASDAQ : DDOG ) Price Target Cut to $290 . 00 by Analysts at Citigroup",
-      "url": "https://www.dailypolitical.com/2026/11/05/datadog-nasdaqddog-price-target-cut-to-290-00-by-analysts-at-citigroup.html",
-      "published": "2026-11-05",
-      "fetched": "2026-11-24"
+      "title": "Datadog Named a Challenger in the 2026 Gartner® Magic Quadrant™ for Security Information and Event Management",
+      "url": "https://markets.businessinsider.com/news/stocks/datadog-named-a-challenger-in-the-2026-gartner-magic-quadrant-for-security-information-and-event-management-1036792855",
+      "published": "2026-11-23",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E19",
       "kind": "news",
-      "title": "Why Datadog Is Eyeing a $4B Buy of Cloud Defense Firm Upwind",
-      "url": "https://www.bankinfosecurity.com/blogs/datadog-eyeing-4b-buy-cloud-defense-firm-upwind-p-4225",
-      "published": "2026-10-23",
-      "fetched": "2026-11-24"
+      "title": "Datadog beat earnings—then its biggest AI customer hit the brakes",
+      "url": "https://uk.finance.yahoo.com/news/datadog-beat-earnings-then-biggest-071230736.html",
+      "published": "2026-11-23",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E20",
       "kind": "news",
-      "title": "Datadog ( NASDAQ : DDOG ) versus VTEX ( NYSE : VTEX ) Head to Head Analysis",
-      "url": "https://www.themarketsdaily.com/2026/10/21/datadog-nasdaqddog-versus-vtex-nysevtex-head-to-head-analysis.html",
-      "published": "2026-10-21",
-      "fetched": "2026-11-24"
+      "title": "Is Datadog stock a buy after its 14% post earnings sell-off?",
+      "url": "https://www.msn.com/en-us/money/general/is-datadog-stock-a-buy-after-its-14-post-earnings-sell-off/ar-AA2hQHZa",
+      "published": "2026-11-20",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E21",
       "kind": "news",
-      "title": "S & P 500 Stocks : Sandisk , Datadog , Amazon Lead As AI Stocks Rebound",
-      "url": "https://www.investors.com/news/sp-500-stocks-sandisk-datadog-amazon-lead-ai-stocks-rebound/",
-      "published": "2026-10-19",
-      "fetched": "2026-11-24"
+      "title": "Can Datadog Stock Jump 50%?",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/datadog-stock-jump-50-115831283.html",
+      "published": "2026-11-18",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E22",
       "kind": "news",
-      "title": "Datadog ( NASDAQ : DDOG ) Stock Price Up 4 . 7 % – What Next ?",
-      "url": "https://www.themarketsdaily.com/2026/10/19/datadog-nasdaqddog-stock-price-up-4-7-whats-next.html",
-      "published": "2026-10-19",
-      "fetched": "2026-11-24"
+      "title": "Datadog vs. Figma: Which Technology Stock Is a Better Buy for 2027?",
+      "url": "https://www.fool.com/coverage/better-buy/2026/11/18/datadog-vs-figma-which-technology-stock-is-a-better-buy-for-2027/",
+      "published": "2026-11-18",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E23",
       "kind": "news",
-      "title": "Here Are Monday Top Wall Street Analyst Research Calls : Ameriprise Financial , Boyd Gaming , CoreWeave , Datadog , Intel , JetBlue Airways , PayPal Holdings , Pinterest , Whirlpool , and More",
-      "url": "https://www.aol.com/articles/monday-top-wall-street-analyst-141219000.html",
-      "published": "2026-10-19",
-      "fetched": "2026-11-24"
+      "title": "Datadog and Cloudflare Rise 5% as CoreWeave’s Results Lift Software Stocks; CrowdStrike Climbs 4%",
+      "url": "https://247wallst.com/investing/2026/11/11/datadog-and-cloudflare-rise-5-as-coreweaves-results-lift-software-stocks-crowdstrike-climbs-4/",
+      "published": "2026-11-11",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E24",
       "kind": "news",
-      "title": "Datadog , Inc . $DDOG Stock Purchased by TD Waterhouse Canada Inc .",
-      "url": "https://www.tickerreport.com/banking-finance/13623908/datadog-inc-ddog-stock-purchased-by-td-waterhouse-canada-inc.html",
-      "published": "2026-10-17",
-      "fetched": "2026-11-24"
-    },
-    {
-      "id": "E25",
-      "kind": "news",
-      "title": "Datadog , Inc . $DDOG Stock Purchased by NFSG Corp",
-      "url": "https://www.dailypolitical.com/2026/10/16/datadog-inc-ddog-stock-purchased-by-nfsg-corp.html",
-      "published": "2026-10-16",
-      "fetched": "2026-11-24"
+      "title": "Datadog Stock Crashes 14% Despite an Earnings Beat. Is It a Buy?",
+      "url": "https://247wallst.com/investing/2026/11/04/datadog-stock-crashes-14-despite-an-earnings-beat-is-it-a-buy/",
+      "published": "2026-11-04",
+      "fetched": "2026-11-25"
     }
   ]
 }

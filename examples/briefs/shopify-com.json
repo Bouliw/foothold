@@ -3,42 +3,42 @@
     "name": "Shopify",
     "domain": "shopify.com"
   },
-  "researched": "2026-11-24",
+  "researched": "2026-11-25",
   "offer": "Acme Access",
   "model": "local/gemma-4-26b-a4b-it-qat-mlx",
   "company": {
     "summary": {
-      "text": "Shopify is an all-in-one commerce platform that provides tools for businesses to manage every part of their operations, from website building to payments.",
-      "quote": "Get more than ecommerce software with tools to manage every part of your business.",
-      "source": "E1",
-      "url": "https://www.shopify.com/",
-      "source_title": "Shopify: The All-in-One Commerce Platform for Businesses - Shopify",
+      "text": "Shopify is a Canadian e-commerce company that provides software and tools for businesses to build, manage, and grow their online presence.",
+      "quote": "Shopify: Canadian e-commerce company.",
+      "source": "E6",
+      "url": "https://www.wikidata.org/wiki/Q7501150",
+      "source_title": "Wikidata: Shopify",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     "size": {
-      "text": "8,300 employees as of 2023-01-01.",
+      "text": "8,300 employees as of 2023-01-01",
       "quote": "Employees: 8,300 (as of 2023-01-01).",
       "source": "E6",
       "url": "https://www.wikidata.org/wiki/Q7501150",
       "source_title": "Wikidata: Shopify",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     "markets": {
       "text": "Serves entrepreneurs to enterprise brands globally across online and in-person channels.",
       "quote": "For anyone from entrepreneurs to enterprise",
       "source": "E1",
-      "url": "https://www.shopify.com/",
-      "source_title": "Shopify: The All-in-One Commerce Platform for Businesses - Shopify",
+      "url": "https://www.shopify.com/fr",
+      "source_title": "Shopify France",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     "business_model": null
   },
   "fit": {
-    "score": 30,
-    "unknown": 3,
+    "score": 50,
+    "unknown": 2,
     "criteria": [
       {
         "name": "Runs production workloads on at least one major public cloud",
@@ -65,76 +65,58 @@
       {
         "name": "Is hiring for cloud security, identity or platform engineering roles",
         "weight": 2,
-        "verdict": "unknown",
-        "why": "Not found in the public sources checked."
+        "verdict": "yes",
+        "why": "The company has open roles in engineering and machine learning.",
+        "quote": "Applied Machine Learning Engineering Managers",
+        "source": "E3",
+        "url": "https://www.shopify.com/careers",
+        "source_title": "Careers, Internships, and Jobs at Shopify | Shopify Careers - Shopify"
       },
       {
         "name": "Sells to enterprise customers who ask for security assurances",
         "weight": 1,
         "verdict": "yes",
-        "why": "The company explicitly targets enterprise brands and offers an Enterprise plan.",
+        "why": "The company explicitly mentions being trusted by enterprise brands.",
         "quote": "Trusted by enterprise brands",
         "source": "E1",
-        "url": "https://www.shopify.com/",
-        "source_title": "Shopify: The All-in-One Commerce Platform for Businesses - Shopify"
+        "url": "https://www.shopify.com/fr",
+        "source_title": "Shopify France"
       }
     ]
   },
   "signals": [
     {
       "type": "financial",
-      "date": "2026-11-10",
-      "text": "The company's stock has experienced recent volatility, falling 8% and 10% in November 2026.",
-      "quote": "Shopify Is Down 10 % in 1 Month .",
-      "source": "E8",
-      "url": "https://www.aol.com/articles/shopify-down-10-1-month-002000000.html",
-      "source_title": "Shopify Is Down 10 % in 1 Month . Here Why Id Still Buy and Hold It for the Next Decade .",
-      "published": "2026-11-10",
-      "collected": "2026-11-24"
-    },
-    {
-      "type": "financial",
       "date": "2026-11-06",
-      "text": "The stock price saw an 8% drop in early November.",
+      "text": "The company's stock has experienced recent volatility, falling 8% and 10%.",
       "quote": "Shopify ( TSE : SHOP ) Stock Falls 8 % – Time to Sell ?",
-      "source": "E9",
+      "source": "E10",
       "url": "https://www.themarketsdaily.com/2026/11/06/shopify-tseshop-stock-falls-8-time-to-sell.html",
       "source_title": "Shopify ( TSE : SHOP ) Stock Falls 8 % – Time to Sell ?",
       "published": "2026-11-06",
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     {
-      "type": "financial",
-      "date": "2026-11-06",
-      "text": "Reports indicate Shopify's profits have climbed.",
-      "quote": "Stock market news : Shopify and Suncor profits climb , RioCan hits occupancy record",
-      "source": "E10",
-      "url": "https://www.moneysense.ca/save/investing/stock-news-oct-5/",
-      "source_title": "Stock market news : Shopify and Suncor profits climb , RioCan hits occupancy record",
-      "published": "2026-11-06",
-      "collected": "2026-11-24"
-    },
-    {
-      "type": "stack",
+      "type": "hiring",
       "date": null,
-      "text": "Shopify uses Cloudflare, which is a common component in cloud infrastructure stacks.",
-      "quote": "Third-party technologies detected in the public HTML and response headers of shopify.com: Google Tag Manager, Contentful, Shopify, Cloudflare.",
-      "source": "E7",
-      "url": "https://www.shopify.com/",
-      "source_title": "Technologies visible on shopify.com",
+      "text": "Shopify is actively recruiting for engineering and machine learning roles.",
+      "quote": "Applied Machine Learning Engineering Managers",
+      "source": "E3",
+      "url": "https://www.shopify.com/careers",
+      "source_title": "Careers, Internships, and Jobs at Shopify | Shopify Careers - Shopify",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     },
     {
-      "type": "other",
+      "type": "news",
       "date": null,
-      "text": "The company is heavily focused on AI and agentic commerce in their Fall '26 edition.",
+      "text": "Shopify is focusing on AI and agentic commerce through its Fall '26 Edition.",
       "quote": "What makes Shopify more than software: Fall '26 Edition",
       "source": "E4",
       "url": "https://www.shopify.com/news",
       "source_title": "Shopify Newsroom",
       "published": null,
-      "collected": "2026-11-24"
+      "collected": "2026-11-25"
     }
   ],
   "roles": [
@@ -144,68 +126,68 @@
     },
     {
       "title": "Head of Cloud Security",
-      "why": "Focuses on securing the cloud infrastructure and managing permissions."
+      "why": "Oversees security within the cloud environments used for production."
     },
     {
       "title": "Director of Platform Engineering",
-      "why": "Oversees the platforms where engineers require access to build and deploy."
+      "why": "Manages the infrastructure and platform where workloads run."
     },
     {
       "title": "Identity and Access Management Lead",
-      "why": "Directly manages who has access to what across the organization."
+      "why": "Directly manages user permissions and access controls."
     }
   ],
   "hooks": {
     "email": {
-      "body": "With your Fall '26 focus on agentic commerce and new tools for building apps, managing access across complex environments becomes critical. Acme Access provides a single view to right-size permissions for AWS, Azure, and Google Cloud, ensuring that as you scale your ecosystem, access remains secure and expires automatically.",
-      "signal": 5,
-      "subject": "Securing Shopify's agentic commerce expansion"
+      "body": "With your team hiring for machine learning and engineering roles, managing access across cloud accounts becomes complex. Acme Access provides a single view to right-size permissions and prevent over-privileged roles, ensuring your rapid scaling doesn't lead to security breaches.",
+      "signal": 2,
+      "subject": "Securing Shopify's engineering growth"
     },
     "linkedin": {
-      "body": "I noticed Shopify's recent infrastructure stack includes Cloudflare. As you scale, managing identity across multi-cloud environments can get complex. Acme Access helps security teams right-size access automatically.",
-      "signal": 4
+      "body": "As Shopify scales its engineering teams, managing cloud access across environments gets harder. Acme Access helps security teams right-size permissions automatically to prevent over-privileged roles.",
+      "signal": 2
     },
     "call": {
-      "body": "I'm calling because Shopify is expanding its agentic commerce capabilities. As you build more tools for developers and agents, Acme Access helps ensure that access across your cloud environments is right-sized and automatically expires.",
-      "signal": 5
+      "body": "I noticed Shopify is expanding its engineering teams. As you scale, how are you ensuring engineers don't retain standing admin rights that could increase your attack surface?",
+      "signal": 2
     }
   },
   "objections": [
     {
       "objection": "We already have robust identity management in place.",
-      "response": "Acme Access specializes in providing a single view across AWS, Azure, and Google Cloud to prevent over-privileged roles."
+      "response": "Acme Access specializes in right-sizing access across multi-cloud environments to prevent over-privileged roles that standard tools often miss."
     },
     {
-      "objection": "We don't have the bandwidth to implement new security tools.",
-      "response": "Our platform is designed to automate access reviews and right-size permissions, reducing the manual workload for your engineers."
+      "objection": "Our current security processes are sufficient for our scale.",
+      "response": "As you continue to grow, Acme Access automates access reviews that typically take weeks of manual spreadsheet work."
     },
     {
-      "objection": "We prefer to manage access through our existing cloud providers.",
-      "response": "Acme Access provides a unified view across all your clouds, preventing silos and ensuring no standing admin rights are left active."
+      "objection": "We prefer to build our own internal security tools.",
+      "response": "Acme Access provides a specialized view across AWS, Azure, and Google Cloud that is difficult to build and maintain internally."
     }
   ],
   "gaps": [
     "Job board: no public Greenhouse, Lever, Ashby or Workday board found for this company",
     "SEC EDGAR: skipped, set FOOTHOLD_CONTACT (the SEC asks for a contact address)",
-    "1 statement from the model left out: the quoted passage was not in the cited source",
+    "2 statements from the model left out: the quoted passage was not in the cited source",
     "Not found in the public sources checked: business model"
   ],
   "evidence": [
     {
       "id": "E1",
       "kind": "site",
-      "title": "Shopify: The All-in-One Commerce Platform for Businesses - Shopify",
-      "url": "https://www.shopify.com/",
+      "title": "Shopify France",
+      "url": "https://www.shopify.com/fr",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E2",
       "kind": "site",
-      "title": "Shopify Pricing: Find the Right Plan for Your Business - Shopify",
-      "url": "https://www.shopify.com/pricing",
+      "title": "Shopify Pricing: Find the Right Plan for Your Business - Shopify France",
+      "url": "https://www.shopify.com/fr/tarifs",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E3",
@@ -213,7 +195,7 @@
       "title": "Careers, Internships, and Jobs at Shopify | Shopify Careers - Shopify",
       "url": "https://www.shopify.com/careers",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E4",
@@ -221,7 +203,7 @@
       "title": "Shopify Newsroom",
       "url": "https://www.shopify.com/news",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E5",
@@ -229,7 +211,7 @@
       "title": "Blog de marketing e-commerce : toute l’actualité du e-commerce, des conseils pour votre boutique en ligne et bien plus encore - Shopify France",
       "url": "https://www.shopify.com/fr/blog",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E6",
@@ -237,47 +219,55 @@
       "title": "Wikidata: Shopify",
       "url": "https://www.wikidata.org/wiki/Q7501150",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E7",
       "kind": "stack",
       "title": "Technologies visible on shopify.com",
-      "url": "https://www.shopify.com/",
+      "url": "https://www.shopify.com/fr",
       "published": null,
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E8",
       "kind": "news",
-      "title": "Shopify Is Down 10 % in 1 Month . Here Why Id Still Buy and Hold It for the Next Decade .",
-      "url": "https://www.aol.com/articles/shopify-down-10-1-month-002000000.html",
-      "published": "2026-11-10",
-      "fetched": "2026-11-24"
+      "title": "What a $5 , 000 Investment in Shopify Stock Today Could Grow Into by 2030",
+      "url": "https://www.fool.com/investing/2026/11/24/what-a-usd5-000-investment-in-shopify-stock-today-could-grow-into-by-2030/",
+      "published": "2026-11-25",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E9",
       "kind": "news",
-      "title": "Shopify ( TSE : SHOP ) Stock Falls 8 % – Time to Sell ?",
-      "url": "https://www.themarketsdaily.com/2026/11/06/shopify-tseshop-stock-falls-8-time-to-sell.html",
-      "published": "2026-11-06",
-      "fetched": "2026-11-24"
+      "title": "Shopify Is Down 10 % in 1 Month . Here Why Id Still Buy and Hold It for the Next Decade .",
+      "url": "https://www.aol.com/articles/shopify-down-10-1-month-002000000.html",
+      "published": "2026-11-10",
+      "fetched": "2026-11-25"
     },
     {
       "id": "E10",
       "kind": "news",
-      "title": "Stock market news : Shopify and Suncor profits climb , RioCan hits occupancy record",
-      "url": "https://www.moneysense.ca/save/investing/stock-news-oct-5/",
+      "title": "Shopify ( TSE : SHOP ) Stock Falls 8 % – Time to Sell ?",
+      "url": "https://www.themarketsdaily.com/2026/11/06/shopify-tseshop-stock-falls-8-time-to-sell.html",
       "published": "2026-11-06",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     },
     {
       "id": "E11",
       "kind": "news",
+      "title": "Stock market news : Shopify and Suncor profits climb , RioCan hits occupancy record",
+      "url": "https://www.moneysense.ca/save/investing/stock-news-oct-5/",
+      "published": "2026-11-06",
+      "fetched": "2026-11-25"
+    },
+    {
+      "id": "E12",
+      "kind": "news",
       "title": "Tobi Lütke Shopify Pushes Payments and A . I . Shopping",
       "url": "https://observer.com/2026/11/shopify-ceo-tobi-lutkes-3-7-billion-quarter-tests-his-a-i-shopping-strategy/",
       "published": "2026-11-06",
-      "fetched": "2026-11-24"
+      "fetched": "2026-11-25"
     }
   ]
 }
